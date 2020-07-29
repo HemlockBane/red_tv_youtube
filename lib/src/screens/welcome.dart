@@ -56,6 +56,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       fit: BoxFit.fitHeight,
                     ),
                     shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -70,6 +71,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                             color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 12.0,
+                                color: Colors.black,
+                                offset: Offset(1.0, 5.0),
+                              ),
+                            ],
                           ),
                         ),
                         Text(
@@ -78,6 +86,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             fontWeight: FontWeight.w400,
                             fontSize: 18,
                             color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 12.0,
+                                color: Colors.black,
+                                offset: Offset(1.0, 5.0),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -95,6 +110,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       fit: BoxFit.fitHeight,
                     ),
                     shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -109,14 +125,28 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                             color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 12.0,
+                                color: Colors.black,
+                                offset: Offset(1.0, 5.0),
+                              ),
+                            ],
                           ),
                         ),
                         Text(
-                          'SEASON 3',
+                          'SEASON 1',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 18,
                             color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 12.0,
+                                color: Colors.black,
+                                offset: Offset(1.0, 5.0),
+                              ),
+                            ],
                           ),
                         ),
                       ],
