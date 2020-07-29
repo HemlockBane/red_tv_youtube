@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:red_tv_youtube/src/screens/playlist_details.dart';
+
+final imageUrl =
+    'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg';
 
 class WelcomeScreen extends StatefulWidget {
   WelcomeScreen({Key key, this.title}) : super(key: key);
@@ -47,17 +51,22 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Widget _buildPopularNowSection() {
-    return _buildMiniCarousel(title: 'Popular Now');
+    return _buildMiniCarousel(
+        title: 'Popular Now',
+        onItemTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) {
+              return PlaylistDetailsScreen();
+            }),
+          );
+        });
   }
 
-   Widget _buildExclusivesSection() {
+  Widget _buildExclusivesSection() {
     return _buildMiniCarousel(title: 'Exclusives');
   }
 
-  Widget _buildMiniCarousel({@required String title}) {
-    final imageUrl =
-        'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg';
-
+  Widget _buildMiniCarousel({@required String title, VoidCallback onItemTap}) {
     final imageUrls = List.generate(10, (_) => imageUrl);
 
     return Container(
@@ -78,7 +87,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               itemBuilder: (context, index) {
                 final imageUrl = imageUrls[index];
                 return InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    if (onItemTap != null) onItemTap();
+                  },
                   child: Container(
                     margin: EdgeInsets.only(right: 10),
                     width: 98,
@@ -86,7 +97,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       color: Colors.blue,
                       image: DecorationImage(
                           image: NetworkImage(imageUrl), fit: BoxFit.cover),
-                      
                       borderRadius: BorderRadius.all(
                         Radius.circular(5),
                       ),
@@ -100,8 +110,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
     );
   }
-
- 
 
   TextStyle _textStyle({Color color = Colors.white, double fontSize = 16}) {
     return Theme.of(context)
