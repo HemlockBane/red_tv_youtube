@@ -117,6 +117,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ],
                       ),
                     ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
                   ],
                 ),
               ),
@@ -252,7 +255,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return _buildMiniCarousel(title: 'Popular Now');
   }
 
-   Widget _buildExclusivesSection() {
+  Widget _buildExclusivesSection() {
     return _buildMiniCarousel(title: 'Exclusives');
   }
 
@@ -288,7 +291,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       color: Colors.blue,
                       image: DecorationImage(
                           image: NetworkImage(imageUrl), fit: BoxFit.cover),
-                      
                       borderRadius: BorderRadius.all(
                         Radius.circular(5),
                       ),
@@ -302,8 +304,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
     );
   }
-
- 
 
   TextStyle _textStyle({Color color = Colors.white, double fontSize = 16}) {
     return Theme.of(context)
