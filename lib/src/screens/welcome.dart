@@ -27,107 +27,109 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               _buildWelcomeTo(),
               _buildPaddingTextBtn(),
               _buildSeries(),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Column(
-                  children: <Widget>[
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            // color: Colors.grey,
-                            height: 374,
-                            width: 239,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/images/the_menn.jpg'),
-                                fit: BoxFit.fitHeight,
-                              ),
-                              shape: BoxShape.rectangle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15.0, horizontal: 15.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    'THE MEN\'S CLUB',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    'SEASON 3',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 15),
-                          Container(
-                            // color: Colors.grey,
-                            height: 374,
-                            width: 239,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image:
-                                    AssetImage('assets/images/asst_madam.jpg'),
-                                fit: BoxFit.fitHeight,
-                              ),
-                              shape: BoxShape.rectangle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15.0, vertical: 15.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    'ASSISTANT MADAM',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    'SEASON 3',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                  ],
-                ),
-              ),
+              _buildSeriesCarousel(),
               _buildPopularNowSection(),
               _buildExclusivesSection()
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Padding _buildSeriesCarousel() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      child: Column(
+        children: <Widget>[
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: <Widget>[
+                Container(
+                  // color: Colors.grey,
+                  height: 374,
+                  width: 239,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/the_menn.jpg'),
+                      fit: BoxFit.fitHeight,
+                    ),
+                    shape: BoxShape.rectangle,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'THE MEN\'S CLUB',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          'SEASON 3',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 15),
+                Container(
+                  // color: Colors.grey,
+                  height: 374,
+                  width: 239,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/asst_madam.jpg'),
+                      fit: BoxFit.fitHeight,
+                    ),
+                    shape: BoxShape.rectangle,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0, vertical: 15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'ASSISTANT MADAM',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          'SEASON 3',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 15.0,
+          ),
+        ],
       ),
     );
   }
@@ -265,42 +267,45 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     final imageUrls = List.generate(10, (_) => imageUrl);
 
-    return Container(
-      height: 180,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: _textStyle(color: Color(0xFFCACACA)),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 9),
-            height: 117,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: imageUrls.length,
-              itemBuilder: (context, index) {
-                final imageUrl = imageUrls[index];
-                return InkWell(
-                  onTap: () {},
-                  child: Container(
-                    margin: EdgeInsets.only(right: 10),
-                    width: 98,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      image: DecorationImage(
-                          image: NetworkImage(imageUrl), fit: BoxFit.cover),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Container(
+        height: 180,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              title,
+              style: _textStyle(color: Color(0xFFCACACA)),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 9),
+              height: 117,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: imageUrls.length,
+                itemBuilder: (context, index) {
+                  final imageUrl = imageUrls[index];
+                  return InkWell(
+                    onTap: () {},
+                    child: Container(
+                      margin: EdgeInsets.only(right: 10),
+                      width: 98,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        image: DecorationImage(
+                            image: NetworkImage(imageUrl), fit: BoxFit.cover),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
