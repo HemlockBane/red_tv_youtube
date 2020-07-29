@@ -20,7 +20,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       backgroundColor: Color(0xff3F3F3F),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 15),
+          margin: EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: <Widget>[
               SizedBox(
