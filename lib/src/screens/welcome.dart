@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:red_tv_youtube/src/screens/playlist_details.dart';
+
+final imageUrl =
+    'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg';
 
 class WelcomeScreen extends StatefulWidget {
   WelcomeScreen({Key key, this.title}) : super(key: key);
@@ -284,58 +288,62 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Widget _buildPopularNowSection() {
-    return _buildMiniCarousel(title: 'Popular Now');
+    return _buildMiniCarousel(
+        title: 'Popular Now',
+        onItemTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) {
+              return PlaylistDetailsScreen();
+            }),
+          );
+        });
   }
 
   Widget _buildExclusivesSection() {
     return _buildMiniCarousel(title: 'Exclusives');
   }
 
-  Widget _buildMiniCarousel({@required String title}) {
-    final imageUrl =
-        'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg';
-
+  Widget _buildMiniCarousel({@required String title, VoidCallback onItemTap}) {
     final imageUrls = List.generate(10, (_) => imageUrl);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Container(
-        height: 180,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              title,
-              style: _textStyle(color: Color(0xFFCACACA)),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 9),
-              height: 117,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: imageUrls.length,
-                itemBuilder: (context, index) {
-                  final imageUrl = imageUrls[index];
-                  return InkWell(
-                    onTap: () {},
-                    child: Container(
-                      margin: EdgeInsets.only(right: 10),
-                      width: 98,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        image: DecorationImage(
-                            image: NetworkImage(imageUrl), fit: BoxFit.cover),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
-                        ),
+    return Container(
+      height: 180,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title,
+            style: _textStyle(color: Color(0xFFCACACA)),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 9),
+            height: 117,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: imageUrls.length,
+              itemBuilder: (context, index) {
+                final imageUrl = imageUrls[index];
+                return InkWell(
+                  onTap: () {
+                    if (onItemTap != null) onItemTap();
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10),
+                    width: 98,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      image: DecorationImage(
+                          image: NetworkImage(imageUrl), fit: BoxFit.cover),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
