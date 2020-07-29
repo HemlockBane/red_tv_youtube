@@ -24,25 +24,35 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
 
               /// ..Add your code here
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Welcome to',
-                    style: TextStyle(
-                      color: Color(0xFFCACACA),
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+              _buildWelcomeTo(),
               _buildPopularNowSection(),
               _buildExclusivesSection()
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Row _buildWelcomeTo() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Welcome to',
+          style: TextStyle(
+            color: Color(0xFFCACACA),
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(width: 15),
+        Container(
+            width: 50,
+            height: 50,
+            child: Image.asset('assets/images/red_tv.jpg')),
+      ],
     );
   }
 

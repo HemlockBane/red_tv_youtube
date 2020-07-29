@@ -8,10 +8,10 @@ class MyApp extends StatelessWidget {
       title: 'Red TV Youtube',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.white,
+        primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: WelcomeScreen(title: 'Flutter Demo Home Page'),
+      home: WelcomeScreen(title: 'Red TV Youtube'),
     );
   }
 }
