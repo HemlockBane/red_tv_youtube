@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:red_tv_youtube/src/screens/welcome.dart';
+// import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class SeriesDetailsScreen extends StatefulWidget {
   @override
@@ -9,6 +9,8 @@ class SeriesDetailsScreen extends StatefulWidget {
 class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final imageSeries = 'assets/images/the_menn.jpg';
+
   double height = 0;
   @override
   @override
@@ -16,7 +18,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
     height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      // key: _scaffoldKey,
+      key: _scaffoldKey,
       body: Container(
         height: height,
         child: Stack(
@@ -25,7 +27,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
               children: <Widget>[
                 Container(
                   height: height,
-                  child: Image.network(
+                  child: Image.asset(
                     imageSeries,
                     fit: BoxFit.cover,
                   ),
