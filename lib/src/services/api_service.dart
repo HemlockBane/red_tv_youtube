@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-// import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:red_tv_youtube/src/models/channel_model.dart';
 import 'package:red_tv_youtube/src/models/video_model.dart';
 import 'package:red_tv_youtube/src/utilities/keys.dart';
@@ -20,9 +19,11 @@ class APIService {
       'id': channelId,
       'key': API_KEY,
     };
-
-    Uri uri = Uri.https(_baseUrl, '/youtube/V3/channels', parameters);
-
+    Uri uri = Uri.https(
+      _baseUrl,
+      '/youtube/v3/channels',
+      parameters,
+    );
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };

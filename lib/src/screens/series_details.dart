@@ -19,7 +19,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
     height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      key: _scaffoldKey,
+      // key: _scaffoldKey,
       body: Container(
         height: height,
         child: Stack(
