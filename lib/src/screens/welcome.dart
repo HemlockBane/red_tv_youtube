@@ -233,62 +233,62 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           ),
                         ),
                       );
-                      return Row(
-                        children: <Widget>[
-                          // Container(
-                          //   height: 374,
-                          //   width: 239,
-                          //   decoration: BoxDecoration(
-                          //     image: DecorationImage(
-                          //       image: AssetImage('assets/images/asst_madam.jpg'),
-                          //       fit: BoxFit.fitHeight,
-                          //     ),
-                          //     shape: BoxShape.rectangle,
-                          //     borderRadius: BorderRadius.circular(10),
-                          //   ),
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.symmetric(
-                          //         horizontal: 15.0, vertical: 15.0),
-                          //     child: Column(
-                          //       mainAxisAlignment: MainAxisAlignment.end,
-                          //       crossAxisAlignment: CrossAxisAlignment.start,
-                          //       children: <Widget>[
-                          //         Text(
-                          //           'ASSISTANT MADAM'.toUpperCase(),
-                          //           style: TextStyle(
-                          //             fontWeight: FontWeight.bold,
-                          //             fontSize: 18,
-                          //             color: Colors.white,
-                          //             shadows: [
-                          //               Shadow(
-                          //                 blurRadius: 12.0,
-                          //                 color: Colors.black,
-                          //                 offset: Offset(1.0, 5.0),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //         Text(
-                          //           'SEASON 1'.toUpperCase(),
-                          //           style: TextStyle(
-                          //             fontWeight: FontWeight.w400,
-                          //             fontSize: 18,
-                          //             color: Colors.white,
-                          //             shadows: [
-                          //               Shadow(
-                          //                 blurRadius: 12.0,
-                          //                 color: Colors.black,
-                          //                 offset: Offset(1.0, 5.0),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
-                        ],
-                      );
+                      // return Row(
+                      //   children: <Widget>[
+                      //     // Container(
+                      //     //   height: 374,
+                      //     //   width: 239,
+                      //     //   decoration: BoxDecoration(
+                      //     //     image: DecorationImage(
+                      //     //       image: AssetImage('assets/images/asst_madam.jpg'),
+                      //     //       fit: BoxFit.fitHeight,
+                      //     //     ),
+                      //     //     shape: BoxShape.rectangle,
+                      //     //     borderRadius: BorderRadius.circular(10),
+                      //     //   ),
+                      //     //   child: Padding(
+                      //     //     padding: const EdgeInsets.symmetric(
+                      //     //         horizontal: 15.0, vertical: 15.0),
+                      //     //     child: Column(
+                      //     //       mainAxisAlignment: MainAxisAlignment.end,
+                      //     //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //     //       children: <Widget>[
+                      //     //         Text(
+                      //     //           'ASSISTANT MADAM'.toUpperCase(),
+                      //     //           style: TextStyle(
+                      //     //             fontWeight: FontWeight.bold,
+                      //     //             fontSize: 18,
+                      //     //             color: Colors.white,
+                      //     //             shadows: [
+                      //     //               Shadow(
+                      //     //                 blurRadius: 12.0,
+                      //     //                 color: Colors.black,
+                      //     //                 offset: Offset(1.0, 5.0),
+                      //     //               ),
+                      //     //             ],
+                      //     //           ),
+                      //     //         ),
+                      //     //         Text(
+                      //     //           'SEASON 1'.toUpperCase(),
+                      //     //           style: TextStyle(
+                      //     //             fontWeight: FontWeight.w400,
+                      //     //             fontSize: 18,
+                      //     //             color: Colors.white,
+                      //     //             shadows: [
+                      //     //               Shadow(
+                      //     //                 blurRadius: 12.0,
+                      //     //                 color: Colors.black,
+                      //     //                 offset: Offset(1.0, 5.0),
+                      //     //               ),
+                      //     //             ],
+                      //     //           ),
+                      //     //         ),
+                      //     //       ],
+                      //     //     ),
+                      //     //   ),
+                      //     // ),
+                      //   ],
+                      // );
                     },
                   ),
                 ),
