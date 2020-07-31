@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
 
-final imageUrl =
-    'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg';
+final imageUrl = 'https://i.ytimg.com/vi/iNJt2WLH1EY/sddefault.jpg';
 
 final imageSeries = 'assets/images/the_menn.jpg';
 
@@ -312,7 +311,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Widget _buildExclusivesSection() {
-    return _buildMiniCarousel(title: 'Exclusives');
+    return _buildMiniCarousel(
+        title: 'Exclusives',
+        onItemTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) {
+              return PlaylistDetailsScreen();
+            }),
+          );
+        });
   }
 
   Widget _buildMiniCarousel({@required String title, VoidCallback onItemTap}) {
