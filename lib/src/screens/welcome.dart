@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:red_tv_youtube/src/models/channel_model.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
+import 'package:red_tv_youtube/src/services/api_service.dart';
 
 final imageUrl =
     'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg';
@@ -20,6 +22,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Channel _channel,
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initChannel();
+  }
+
+  _initChannel() async {
+    Channel channel = await APIService.instance
+      .fetchChannel(channelId: 'UCmaJwjJJkzMttK8L79g_8zA');
+    setState(() {
+      _channel = channel;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
