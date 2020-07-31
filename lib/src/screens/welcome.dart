@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
+import 'package:red_tv_youtube/src/screens/series_details.dart';
 
 final imageUrl =
     'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg';
+
+final imageSeries = 'assets/images/the_menn.jpg';
 
 class WelcomeScreen extends StatefulWidget {
   WelcomeScreen({Key key, this.title}) : super(key: key);
@@ -50,56 +53,65 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: <Widget>[
-                Container(
-                  // color: Colors.grey,
-                  height: 374,
-                  width: 239,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/the_menn.jpg'),
-                      fit: BoxFit.fitHeight,
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) {
+                        return SeriesDetailsScreen();
+                      }),
+                    );
+                  },
+                  child: Container(
+                    // color: Colors.grey,
+                    height: 374,
+                    width: 239,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(imageSeries),
+                        fit: BoxFit.fitHeight,
+                      ),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 15.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'THE MEN\'S CLUB',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 12.0,
-                                color: Colors.black,
-                                offset: Offset(1.0, 5.0),
-                              ),
-                            ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 15.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'THE MEN\'S CLUB'.toUpperCase(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 12.0,
+                                  color: Colors.black,
+                                  offset: Offset(1.0, 5.0),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Text(
-                          'SEASON 3',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 18,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 12.0,
-                                color: Colors.black,
-                                offset: Offset(1.0, 5.0),
-                              ),
-                            ],
+                          Text(
+                            'SEASON 3'.toUpperCase(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 18,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 12.0,
+                                  color: Colors.black,
+                                  offset: Offset(1.0, 5.0),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -124,7 +136,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'ASSISTANT MADAM',
+                          'ASSISTANT MADAM'.toUpperCase(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -139,7 +151,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           ),
                         ),
                         Text(
-                          'SEASON 1',
+                          'SEASON 1'.toUpperCase(),
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 18,
@@ -300,15 +312,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Widget _buildExclusivesSection() {
-    return _buildMiniCarousel(
-        title: 'Exclusives',
-        onItemTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) {
-              return PlaylistDetailsScreen();
-            }),
-          );
-        });
+    return _buildMiniCarousel(title: 'Exclusives');
   }
 
   Widget _buildMiniCarousel({@required String title, VoidCallback onItemTap}) {
