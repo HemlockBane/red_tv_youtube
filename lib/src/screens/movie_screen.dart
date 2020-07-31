@@ -21,7 +21,7 @@ class _MovieScreenState extends State<MovieScreen> {
 
   _initChannel() async {
     Channel channel = await APIService.instance
-        .fetchChannel(channelId: 'UCmaJwjJJkzMttK8L79g_8zA');
+        .fetchChannel(channelId: 'UCmaJwjJJkzMttK8L79g_8zA'); // The Channel ID
     setState(() {
       _channel = channel;
     });
