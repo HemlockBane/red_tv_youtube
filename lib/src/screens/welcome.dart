@@ -19,9 +19,8 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-
-  Channel _channel,
-  bool _isLoading = false;
+  Channel _channel;
+  // bool _isLoading = false;
 
   @override
   void initState() {
@@ -31,7 +30,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   _initChannel() async {
     Channel channel = await APIService.instance
-      .fetchChannel(channelId: 'UCmaJwjJJkzMttK8L79g_8zA');
+        .fetchChannel(channelId: 'UCmaJwjJJkzMttK8L79g_8zA');
     setState(() {
       _channel = channel;
     });
@@ -352,7 +351,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             height: 117,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: imageUrls.length,
+              itemCount: imageUrls.length, // 1 + _channel.videos.length
               itemBuilder: (context, index) {
                 final imageUrl = imageUrls[index];
                 return InkWell(
