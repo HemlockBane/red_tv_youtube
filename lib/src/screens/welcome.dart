@@ -16,6 +16,8 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  bool _shouldShowMore = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,15 +72,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         child: Column(
           children: <Widget>[
             Text(
-              "REDTV is a fast paced  lifestyle channel that puts Africa on the global stage. \n\n Proudly associated with the United Bank for Africa, REDTV is here to entertain and inform with content that features the very best in entertainment, fashion, news, design, music, sport, movies and travel. \n \n REDTV collaborates with the most talented visionaries, creative minds daring to believe in a New Africa, putting together content that reflects it. Feel the Heat on REDTV.",
+              "REDTV is a fast paced  lifestyle channel that puts Africa on the global stage. "
+              "\n\nProudly associated with the United Bank for Africa, REDTV is here "
+              "to entertain and inform with content that features the very "
+              "best in entertainment, fashion, news, design, music, sport, "
+              "movies and travel.\n\nREDTV collaborates with the "
+              "most talented visionaries, creative minds daring to believe in a New Africa, putting "
+              "together content that reflects it. Feel the Heat on REDTV.",
+              maxLines: _shouldShowMore ? null : 7,
+              overflow: TextOverflow.fade,
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
               ),
             ),
+            Container(
+              
+            ),
             SizedBox(
-              height: 12,
+              height: 5,
             ),
             Container(
               width: double.infinity / 2,
@@ -88,12 +101,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                 color: Color(0xFFCACACA),
                 child: Text(
-                  'Read More',
+                  _shouldShowMore ? 'Show Less' : 'Read More',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    _shouldShowMore = !_shouldShowMore;
+                  });
+                },
               ),
             ),
             Container(
@@ -120,7 +137,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Column _buildSeriesCarousel() {
-
     return Column(
       children: <Widget>[
         Padding(
@@ -219,7 +235,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       );
                       return Row(
                         children: <Widget>[
-                          
                           // Container(
                           //   height: 374,
                           //   width: 239,
@@ -364,4 +379,3 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         .copyWith(color: color, fontSize: fontSize);
   }
 }
-
