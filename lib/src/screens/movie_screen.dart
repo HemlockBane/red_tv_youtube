@@ -33,7 +33,7 @@ class _MovieScreenState extends State<MovieScreen> {
       padding: EdgeInsets.all(20.0),
       height: 100.0,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black54,
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -58,7 +58,7 @@ class _MovieScreenState extends State<MovieScreen> {
                 Text(
                   _channel.title,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontSize: 20.0,
                     fontWeight: FontWeight.w600,
                   ),
@@ -68,7 +68,7 @@ class _MovieScreenState extends State<MovieScreen> {
                   '${_channel.subscriberCount} subscribers',
                   style: TextStyle(
                     color: Colors.grey[600],
-                    fontSize: 16.0,
+                    fontSize: 13.0,
                     fontWeight: FontWeight.w600,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -94,10 +94,10 @@ class _MovieScreenState extends State<MovieScreen> {
         padding: EdgeInsets.all(10.0),
         height: 140.0,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.black87,
           boxShadow: [
             BoxShadow(
-              color: Colors.black12,
+              color: Colors.grey[700],
               offset: Offset(0, 1),
               blurRadius: 6.0,
             ),
@@ -114,8 +114,9 @@ class _MovieScreenState extends State<MovieScreen> {
               child: Text(
                 video.title,
                 style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18.0,
+                  color: Colors.grey,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -139,8 +140,10 @@ class _MovieScreenState extends State<MovieScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff3F3F3F),
       appBar: AppBar(
-        title: Text('YouTube Channel'),
+        title: Text('Red TV Stream'),
+        backgroundColor: Color(0xFF3F3F3F),
       ),
       body: _channel != null
           ? NotificationListener<ScrollNotification>(
