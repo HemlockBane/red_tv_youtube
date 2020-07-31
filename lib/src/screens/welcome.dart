@@ -17,6 +17,10 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+
+  Channel _channel,
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
