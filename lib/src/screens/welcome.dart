@@ -355,7 +355,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     margin: EdgeInsets.only(right: 10),
                     width: 98,
                     decoration: BoxDecoration(
-                      color: Colors.blue,
                       image: DecorationImage(
                           image: NetworkImage(imageUrl), fit: BoxFit.cover),
                       borderRadius: BorderRadius.all(
