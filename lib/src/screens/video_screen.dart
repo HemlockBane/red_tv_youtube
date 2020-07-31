@@ -32,12 +32,15 @@ class _VideoScreenState extends State<VideoScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xff3F3F3F),
       ),
-      body: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: true,
-        onReady: () {
-          print('Player is ready.');
-        },
+      body: Container(
+        height: double.infinity,
+        child: YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: true,
+          onReady: () {
+            print('Player is ready.');
+          },
+        ),
       ),
     );
   }
