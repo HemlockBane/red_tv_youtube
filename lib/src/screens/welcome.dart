@@ -87,9 +87,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 fontSize: 12,
               ),
             ),
-            Container(
-              
-            ),
+            Container(),
             SizedBox(
               height: 5,
             ),
