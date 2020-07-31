@@ -351,7 +351,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             height: 117,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: imageUrls.length, // 1 + _channel.videos.length
+              itemCount: imageUrls.length,
               itemBuilder: (context, index) {
                 final imageUrl = imageUrls[index];
                 return InkWell(

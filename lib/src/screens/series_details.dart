@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:red_tv_youtube/src/screens/movie_screen.dart';
 // import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class SeriesDetailsScreen extends StatefulWidget {
@@ -174,7 +175,13 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
         Material(
           color: Color(0xFFBA0000),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) {
+                  return MovieScreen();
+                }),
+              );
+            },
             child: Container(
               height: 55,
               width: double.infinity,
