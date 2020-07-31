@@ -28,14 +28,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               SizedBox(
                 height: 55,
               ),
-
-              /// ..Add your code here
-              _buildWelcomeTo(),
-              _buildPaddingTextBtn(),
-              _buildSeries(),
+              _buildWelcomeBanner(),
+              _buildInfoAndButtons(),
               _buildSeriesCarousel(),
-              _buildPopularNowSection(),
-              _buildExclusivesSection()
+              _buildPopularNowCarousel(),
+              _buildExclusivesCarousel()
             ],
           ),
         ),
@@ -43,239 +40,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
-  Padding _buildSeriesCarousel() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      child: Column(
-        children: <Widget>[
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: <Widget>[
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) {
-                        return SeriesDetailsScreen();
-                      }),
-                    );
-                  },
-                  child: Container(
-                    // color: Colors.grey,
-                    height: 374,
-                    width: 239,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(imageSeries),
-                        fit: BoxFit.fitHeight,
-                      ),
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 15.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'THE MEN\'S CLUB'.toUpperCase(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 12.0,
-                                  color: Colors.black,
-                                  offset: Offset(1.0, 5.0),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            'SEASON 3'.toUpperCase(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 12.0,
-                                  color: Colors.black,
-                                  offset: Offset(1.0, 5.0),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 15),
-                Container(
-                  // color: Colors.grey,
-                  height: 374,
-                  width: 239,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/asst_madam.jpg'),
-                      fit: BoxFit.fitHeight,
-                    ),
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15.0, vertical: 15.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'ASSISTANT MADAM'.toUpperCase(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 12.0,
-                                color: Colors.black,
-                                offset: Offset(1.0, 5.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          'SEASON 1'.toUpperCase(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 18,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 12.0,
-                                color: Colors.black,
-                                offset: Offset(1.0, 5.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 15.0,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Column _buildSeries() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 7.0),
-          child: Container(
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Series',
-                  style: TextStyle(
-                    color: Color(0xFFCACACA),
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'New Episodes',
-                  style: TextStyle(
-                    color: Color(0xFF8A8A8A),
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Padding _buildPaddingTextBtn() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 25.0),
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            Text(
-              "REDTV is a fast paced  lifestyle channel that puts Africa on the global stage. \n\n Proudly associated with the United Bank for Africa, REDTV is here to entertain and inform with content that features the very best in entertainment, fashion, news, design, music, sport, movies and travel. \n \n REDTV collaborates with the most talented visionaries, creative minds daring to believe in a New Africa, putting together content that reflects it. Feel the Heat on REDTV.",
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Container(
-              width: double.infinity / 2,
-              child: MaterialButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7)),
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                color: Color(0xFFCACACA),
-                child: Text(
-                  'Read More',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                onPressed: () {},
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Container(
-              width: double.infinity / 2,
-              child: MaterialButton(
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                color: Colors.red[700],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7)),
-                child: Text(
-                  'Subscribe',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                onPressed: () {},
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Row _buildWelcomeTo() {
+  Row _buildWelcomeBanner() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -298,7 +63,232 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
-  Widget _buildPopularNowSection() {
+  Padding _buildInfoAndButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 25.0),
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Text(
+              "REDTV is a fast paced  lifestyle channel that puts Africa on the global stage. \n\n Proudly associated with the United Bank for Africa, REDTV is here to entertain and inform with content that features the very best in entertainment, fashion, news, design, music, sport, movies and travel. \n \n REDTV collaborates with the most talented visionaries, creative minds daring to believe in a New Africa, putting together content that reflects it. Feel the Heat on REDTV.",
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            Container(
+              width: double.infinity / 2,
+              child: MaterialButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(3)),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                color: Color(0xFFCACACA),
+                child: Text(
+                  'Read More',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {},
+              ),
+            ),
+            Container(
+              width: double.infinity / 2,
+              child: MaterialButton(
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                color: Colors.red[700],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(3)),
+                child: Text(
+                  'Subscribe',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {},
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Column _buildSeriesCarousel() {
+
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 7.0),
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Series',
+                  style: TextStyle(
+                    color: Color(0xFFCACACA),
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'New Episodes',
+                  style: TextStyle(
+                    color: Color(0xFF8A8A8A),
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Container(
+                  height: 200,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) {
+                              return SeriesDetailsScreen();
+                            }),
+                          );
+                        },
+                        child: Container(
+                          height: 274,
+                          width: 179,
+                          margin: EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(imageSeries),
+                              fit: BoxFit.fitHeight,
+                            ),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'THE MEN\'S CLUB'.toUpperCase(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 12.0,
+                                        color: Colors.black,
+                                        offset: Offset(1.0, 5.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  'SEASON 3'.toUpperCase(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 12.0,
+                                        color: Colors.black,
+                                        offset: Offset(1.0, 5.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                      return Row(
+                        children: <Widget>[
+                          
+                          // Container(
+                          //   height: 374,
+                          //   width: 239,
+                          //   decoration: BoxDecoration(
+                          //     image: DecorationImage(
+                          //       image: AssetImage('assets/images/asst_madam.jpg'),
+                          //       fit: BoxFit.fitHeight,
+                          //     ),
+                          //     shape: BoxShape.rectangle,
+                          //     borderRadius: BorderRadius.circular(10),
+                          //   ),
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.symmetric(
+                          //         horizontal: 15.0, vertical: 15.0),
+                          //     child: Column(
+                          //       mainAxisAlignment: MainAxisAlignment.end,
+                          //       crossAxisAlignment: CrossAxisAlignment.start,
+                          //       children: <Widget>[
+                          //         Text(
+                          //           'ASSISTANT MADAM'.toUpperCase(),
+                          //           style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             fontSize: 18,
+                          //             color: Colors.white,
+                          //             shadows: [
+                          //               Shadow(
+                          //                 blurRadius: 12.0,
+                          //                 color: Colors.black,
+                          //                 offset: Offset(1.0, 5.0),
+                          //               ),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //         Text(
+                          //           'SEASON 1'.toUpperCase(),
+                          //           style: TextStyle(
+                          //             fontWeight: FontWeight.w400,
+                          //             fontSize: 18,
+                          //             color: Colors.white,
+                          //             shadows: [
+                          //               Shadow(
+                          //                 blurRadius: 12.0,
+                          //                 color: Colors.black,
+                          //                 offset: Offset(1.0, 5.0),
+                          //               ),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPopularNowCarousel() {
     return _buildMiniCarousel(
         title: 'Popular Now',
         onItemTap: () {
@@ -310,7 +300,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         });
   }
 
-  Widget _buildExclusivesSection() {
+  Widget _buildExclusivesCarousel() {
     return _buildMiniCarousel(
         title: 'Exclusives',
         onItemTap: () {
@@ -374,3 +364,4 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         .copyWith(color: color, fontSize: fontSize);
   }
 }
+
