@@ -27,30 +27,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [
     'email',
     'https://www.googleapis.com/auth/contacts.readonly',
-    // 'https://www.googleapis.com/auth/youtube'
+    'https://www.googleapis.com/auth/youtube'
   ]);
   GoogleSignInAccount _gAccount;
 
   @override
   void initState() {
     super.initState();
-    // setState(() {
-    //   isLoading = true;
-    // });
+    setState(() {
+      isLoading = true;
+    });
 
     _googleSignIn.isSignedIn().then((isSignedIn) async {
-      print(isSignedIn);
+      print('is signed in: $isSignedIn');
 
-      if (isSignedIn) {
-        // _gAccount = _googleSignIn.currentUser;
-        // print('current user $_gAccount');
-
-        // var auth = await _gAccount.authentication;
-        // token = auth.accessToken;
-        // print('access token - $token');
-      } else {
+      if (!isSignedIn) {
         _gAccount = await _googleSignIn.signIn();
-        print(_gAccount);
+        print('current user: $_gAccount');
         var auth = await _gAccount.authentication;
         token = auth.accessToken;
         print('access token - $token');
@@ -59,23 +52,31 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount account) async {
-      print('....');
+      print('on current user changed');
       setState(() {
         _gAccount = account;
       });
 
-      _isSubscribed =
-          await _apiService.checkIfUserIsSubscribed(authToken: token);
+      if (_gAccount != null) {
+        var auth = await _gAccount.authentication;
+        print('current user: $_gAccount');
+        token = auth.accessToken;
+        print('access token - $token');
 
-      print('current user: $_gAccount');
-    });
-    _googleSignIn.signInSilently(suppressErrors: false).catchError((e) {
-      print(e);
+        _isSubscribed =
+            await _apiService.checkIfUserIsSubscribed(authToken: token);
+      }
     });
 
-    // setState(() {
-    //   isLoading = false;
-    // });
+    if (_gAccount != null) {
+      _googleSignIn.signInSilently(suppressErrors: false).catchError((e) {
+        print(e);
+      });
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override

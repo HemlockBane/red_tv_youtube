@@ -105,7 +105,8 @@ class APIService {
     };
 
     try {
-      Uri uri = Uri.https(_baseUrl, '$_baseUrl$_subscriptionsPath', parameters);
+      Uri uri =
+          Uri.https(_baseUrl, '$_basePath$_subscriptionsPath', parameters);
       print('api: $uri');
 
       final response = await http.get(uri, headers: headers);
@@ -127,6 +128,7 @@ class APIService {
   }
 
   Future<bool> subscribe({String authToken}) async {
+    print(authToken);
     var subscriptionBody = {
       "snippet": {
         "resourceId": {"channelId": redTVId, "kind": "youtube#channel"}
