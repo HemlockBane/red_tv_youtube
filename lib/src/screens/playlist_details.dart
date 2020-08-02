@@ -8,6 +8,8 @@ class PlaylistDetailsScreen extends StatefulWidget {
 }
 
 class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
+
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   double height = 0;
