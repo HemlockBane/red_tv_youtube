@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
+import 'package:red_tv_youtube/src/services/api_service.dart';
 
 final imageUrl = 'https://i.ytimg.com/vi/iNJt2WLH1EY/sddefault.jpg';
 
@@ -17,28 +18,50 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool _shouldShowMore = false;
+  bool _isSubscribed = false;
+  bool isLoading = false;
+
+  APIService _apiService = APIService.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        isLoading = true;
+      });
+      _isSubscribed = await _apiService.checkIfUserIsSubscribed();
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff3F3F3F),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 55,
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 55,
+                    ),
+                    _buildWelcomeBanner(),
+                    _buildInfoAndButtons(),
+                    _buildSeriesCarousel(),
+                    _buildPopularNowCarousel(),
+                    _buildExclusivesCarousel()
+                  ],
+                ),
               ),
-              _buildWelcomeBanner(),
-              _buildInfoAndButtons(),
-              _buildSeriesCarousel(),
-              _buildPopularNowCarousel(),
-              _buildExclusivesCarousel()
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -119,13 +142,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(3)),
                 child: Text(
-                  'Subscribe',
+                  _isSubscribed ? 'Subscribed' : 'Subscribe',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  // if (!_isSubscribed) {
+                  //   setState(() {
+                  //     isLoading = true;
+                  //   });
+                  //   await _apiService.subscribe();
+                  //   setState(() {
+                  //     isLoading = false;
+                  //   });
+                  // }
+                },
               ),
             ),
           ],

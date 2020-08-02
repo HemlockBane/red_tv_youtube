@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:red_tv_youtube/src/models/channel_model.dart';
 import 'package:red_tv_youtube/src/models/video_model.dart';
@@ -11,7 +12,13 @@ class APIService {
   static final APIService instance = APIService._instantiate();
 
   final String _baseUrl = 'www.googleapis.com';
+  final String _basePath = '/youtube/v3';
+  final String _subscriptionsPath = '/subscription';
+  static final redTVId = "UCmaJwjJJkzMttK8L79g_8zA";
+  String authToken = '';
   String _nextPageToken = '';
+
+  bool subscriptionStatus = false;
 
   Future<Channel> fetchChannel({String channelId}) async {
     Map<String, String> parameters = {
@@ -81,4 +88,86 @@ class APIService {
       throw json.decode(response.body)['error']['message'];
     }
   }
+
+  Future<bool> checkIfUserIsSubscribed() async {
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.authorizationHeader: 'Bearer $authToken'
+    };
+
+    Map<String, String> parameters = {
+      'part': 'snippet, contentDetails',
+      'mine': 'true',
+      'forChannelId': redTVId,
+      'key': API_KEY
+    };
+
+    try {
+      Uri uri = Uri.https(_baseUrl, '$_baseUrl$_subscriptionsPath', parameters);
+      print('api: $uri');
+
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('api: subscription status - $data');
+        final items = data['items'] as List;
+        return subscriptionStatus = items.isNotEmpty;
+      }
+    } catch (e, s) {
+      print(e);
+      print(s);
+      // subscriptionStatus = false;
+      // rethrow;
+    }
+    return subscriptionStatus;
+  }
+
+  Future<bool> subscribe() async {
+    var subscriptionBody = {
+      "snippet": {
+        "resourceId": {"channelId": redTVId, "kind": "youtube#channel"}
+      }
+    };
+
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.authorizationHeader: 'Bearer $authToken'
+    };
+
+    Map<String, String> parameters = {
+      'part': 'snippet, contentDetails',
+      'key': API_KEY
+    };
+
+    try {
+      Uri uri =
+          Uri.https(_baseUrl, '$_basePath$_subscriptionsPath', parameters);
+      print('api: $uri');
+
+      final response =
+          await http.post(uri, headers: headers, body: subscriptionBody);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('api: subscribe user - $data');
+        subscriptionStatus = true;
+      }
+
+      //get playlist data
+
+      // get playlistitems
+    } catch (e, s) {
+      print(e);
+      subscriptionStatus = false;
+    }
+
+    return subscriptionStatus;
+  }
 }
+
+// Check if user is subscribed
+
+// If subscribed, show subscribed and and disable button
+// If not subscribed, show subscribe and enable click
+
+// When user clicks the subscribe button, subscribe user
