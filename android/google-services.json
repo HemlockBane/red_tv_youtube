@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "702842441656",
-    "firebase_url": "https://redtv-api.firebaseio.com",
-    "project_id": "redtv-api",
-    "storage_bucket": "redtv-api.appspot.com"
+    "project_number": "741681232784",
+    "firebase_url": "https://red-tv-app.firebaseio.com",
+    "project_id": "red-tv-app",
+    "storage_bucket": "red-tv-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:702842441656:android:c6a087cea898dc2c37894d",
+        "mobilesdk_app_id": "1:741681232784:android:37b93e580457dd78f25115",
         "android_client_info": {
           "package_name": "com.example.red_tv_youtube"
         }
       },
       "oauth_client": [
         {
-          "client_id": "702842441656-fisslttfanjmlaou37prv3nhr06k84g8.apps.googleusercontent.com",
+          "client_id": "741681232784-hnkbualc8ahiuh9fbpjf8ntc60i29npo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.red_tv_youtube",
+            "certificate_hash": "af923a5d285cac2bc63b75b89e2b266a0d5856ee"
+          }
+        },
+        {
+          "client_id": "741681232784-knbehlciqiji4d5a3cagaspbq515g4hn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBhzPNCOua4qqoykjyXHkGHDox6BvZgFO4"
+          "current_key": "AIzaSyCrFCUKyr5XZzdCxXee-GdwutsRP6VlxGg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "702842441656-fisslttfanjmlaou37prv3nhr06k84g8.apps.googleusercontent.com",
+              "client_id": "741681232784-knbehlciqiji4d5a3cagaspbq515g4hn.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

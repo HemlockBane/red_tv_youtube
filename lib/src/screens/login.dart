@@ -22,8 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _currentUser = account;
       });
-     });
-     _googleSignIn.signInSilently();
+    });
+    _googleSignIn.signInSilently();
   }
 
   @override
@@ -37,6 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildBody(BuildContext context) {
     if (_currentUser != null) {
       return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           ListTile(
             leading: GoogleUserCircleAvatar(
@@ -55,6 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Text('You are not signed in...'),
           RaisedButton(
@@ -67,9 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
 
+    // return
 
-    // return 
-    
     // Old Button click
     // Center(
     //   child: Padding(
@@ -103,16 +108,17 @@ class _LoginScreenState extends State<LoginScreen> {
     //     ),
     //   ),
     // );
-  // }
+  }
 }
-  Future<void> _handleSignIn() async {
-    try{
-    await _googleSignIn.signIn();
-    }catch(error) {
-      print(error);
-    }
-  }
 
-  Future<void> _handleSignOut() async {
-    _googleSignIn.disconnect();
+Future<void> _handleSignIn() async {
+  try {
+    await _googleSignIn.signIn();
+  } catch (error) {
+    print(error);
   }
+}
+
+Future<void> _handleSignOut() async {
+  _googleSignIn.disconnect();
+}
