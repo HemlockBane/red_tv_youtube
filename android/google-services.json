@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "702842441656",
+    "firebase_url": "https://redtv-api.firebaseio.com",
+    "project_id": "redtv-api",
+    "storage_bucket": "redtv-api.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702842441656:android:c6a087cea898dc2c37894d",
+        "android_client_info": {
+          "package_name": "com.example.red_tv_youtube"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702842441656-fisslttfanjmlaou37prv3nhr06k84g8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhzPNCOua4qqoykjyXHkGHDox6BvZgFO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702842441656-fisslttfanjmlaou37prv3nhr06k84g8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

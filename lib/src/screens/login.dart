@@ -116,4 +116,3 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleSignOut() async {
     _googleSignIn.disconnect();
   }
-
