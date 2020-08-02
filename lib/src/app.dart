@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
       title: 'Red TV Youtube',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: WelcomeScreen(title: 'Red TV Youtube'),
