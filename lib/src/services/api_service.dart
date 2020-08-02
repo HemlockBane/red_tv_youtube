@@ -11,7 +11,8 @@ class APIService {
 
   static final APIService instance = APIService._instantiate();
 
-  final apiKey = 'AIzaSyAZ2LG8W9qM_JgCJF99VJaqvMPWHvVflw8';
+  // final apiKey = 'AIzaSyAZ2LG8W9qM_JgCJF99VJaqvMPWHvVflw8';
+  final apiKey = 'AIzaSyC9AU2-GCw8b4_VbCEQ6Qy5mgzs03HEghs';
 
   final String _baseUrl = 'www.googleapis.com';
   final String _basePath = '/youtube/v3';
@@ -129,6 +130,7 @@ class APIService {
 
   Future<bool> subscribe({String authToken}) async {
     print(authToken);
+    
     var subscriptionBody = {
       "snippet": {
         "resourceId": {"channelId": redTVId, "kind": "youtube#channel"}
@@ -151,7 +153,7 @@ class APIService {
       print('api: $uri');
 
       final response =
-          await http.post(uri, headers: headers, body: subscriptionBody);
+          await http.post(uri, headers: headers, body: jsonEncode(subscriptionBody));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

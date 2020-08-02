@@ -38,10 +38,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       isLoading = true;
     });
 
+    print('user at begin: ${_googleSignIn.currentUser}');
+
     _googleSignIn.isSignedIn().then((isSignedIn) async {
       print('is signed in: $isSignedIn');
 
-      if (!isSignedIn) {
+      if (_googleSignIn.currentUser == null) {
         _gAccount = await _googleSignIn.signIn();
         print('current user: $_gAccount');
         var auth = await _gAccount.authentication;
@@ -63,8 +65,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         token = auth.accessToken;
         print('access token - $token');
 
-        _isSubscribed =
-            await _apiService.checkIfUserIsSubscribed(authToken: token);
+        // _isSubscribed =
+        //     await _apiService.checkIfUserIsSubscribed(authToken: token);
+
+        _isSubscribed = false;
+
+        setState(() {
+          isLoading = false;
+        });
       }
     });
 
@@ -77,6 +85,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     setState(() {
       isLoading = false;
     });
+
+    print('user at end: ${_googleSignIn.currentUser}');
   }
 
   @override
@@ -191,15 +201,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                 ),
                 onPressed: () async {
-                  // if (!_isSubscribed) {
-                  //   setState(() {
-                  //     isLoading = true;
-                  //   });
-                  //   await _apiService.subscribe();
-                  //   setState(() {
-                  //     isLoading = false;
-                  //   });
-                  // }
+                  if (!_isSubscribed) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    _isSubscribed = await _apiService.subscribe(authToken: token);
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
                 },
               ),
             ),
