@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:red_tv_youtube/src/screens/login.dart';
 import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class MyApp extends StatelessWidget {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: WelcomeScreen(title: 'Red TV Youtube'),
+      home: LoginScreen(),
     );
   }
 }
