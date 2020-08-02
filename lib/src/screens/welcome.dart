@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
 import 'package:red_tv_youtube/src/services/api_service.dart';
@@ -20,21 +21,61 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   bool _shouldShowMore = false;
   bool _isSubscribed = false;
   bool isLoading = false;
+  String token = '';
 
   APIService _apiService = APIService.instance;
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+    // 'https://www.googleapis.com/auth/youtube'
+  ]);
+  GoogleSignInAccount _gAccount;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        isLoading = true;
-      });
-      _isSubscribed = await _apiService.checkIfUserIsSubscribed();
-      setState(() {
-        isLoading = false;
-      });
+    // setState(() {
+    //   isLoading = true;
+    // });
+
+    _googleSignIn.isSignedIn().then((isSignedIn) async {
+      print(isSignedIn);
+
+      if (isSignedIn) {
+        // _gAccount = _googleSignIn.currentUser;
+        // print('current user $_gAccount');
+
+        // var auth = await _gAccount.authentication;
+        // token = auth.accessToken;
+        // print('access token - $token');
+      } else {
+        _gAccount = await _googleSignIn.signIn();
+        print(_gAccount);
+        var auth = await _gAccount.authentication;
+        token = auth.accessToken;
+        print('access token - $token');
+      }
     });
+
+    _googleSignIn.onCurrentUserChanged
+        .listen((GoogleSignInAccount account) async {
+      print('....');
+      setState(() {
+        _gAccount = account;
+      });
+
+      _isSubscribed =
+          await _apiService.checkIfUserIsSubscribed(authToken: token);
+
+      print('current user: $_gAccount');
+    });
+    _googleSignIn.signInSilently(suppressErrors: false).catchError((e) {
+      print(e);
+    });
+
+    // setState(() {
+    //   isLoading = false;
+    // });
   }
 
   @override

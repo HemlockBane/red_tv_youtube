@@ -11,9 +11,11 @@ class APIService {
 
   static final APIService instance = APIService._instantiate();
 
+  final apiKey = 'AIzaSyAZ2LG8W9qM_JgCJF99VJaqvMPWHvVflw8';
+
   final String _baseUrl = 'www.googleapis.com';
   final String _basePath = '/youtube/v3';
-  final String _subscriptionsPath = '/subscription';
+  final String _subscriptionsPath = '/subscriptions';
   static final redTVId = "UCmaJwjJJkzMttK8L79g_8zA";
   String authToken = '';
   String _nextPageToken = '';
@@ -89,7 +91,7 @@ class APIService {
     }
   }
 
-  Future<bool> checkIfUserIsSubscribed() async {
+  Future<bool> checkIfUserIsSubscribed({String authToken}) async {
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.authorizationHeader: 'Bearer $authToken'
@@ -99,7 +101,7 @@ class APIService {
       'part': 'snippet, contentDetails',
       'mine': 'true',
       'forChannelId': redTVId,
-      'key': API_KEY
+      'key': apiKey
     };
 
     try {
@@ -107,6 +109,8 @@ class APIService {
       print('api: $uri');
 
       final response = await http.get(uri, headers: headers);
+
+      print(jsonDecode(response.body) as Map);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print('api: subscription status - $data');
@@ -122,7 +126,7 @@ class APIService {
     return subscriptionStatus;
   }
 
-  Future<bool> subscribe() async {
+  Future<bool> subscribe({String authToken}) async {
     var subscriptionBody = {
       "snippet": {
         "resourceId": {"channelId": redTVId, "kind": "youtube#channel"}
@@ -136,7 +140,7 @@ class APIService {
 
     Map<String, String> parameters = {
       'part': 'snippet, contentDetails',
-      'key': API_KEY
+      'key': apiKey
     };
 
     try {

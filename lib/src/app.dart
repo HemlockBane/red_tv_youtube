@@ -4,7 +4,9 @@ import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext 
+  
+  context) {
     return MaterialApp(
       title: 'Red TV Youtube',
       debugShowCheckedModeBanner: false,
