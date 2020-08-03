@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen>
   void initState() {
     super.initState();
     controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 2));
+        AnimationController(vsync: this, duration: Duration(seconds: 3));
     colorAnimation = ColorTween(begin: Colors.grey[500], end: Colors.red[800])
         .animate(controller);
     sizeAnimation = Tween<double>(begin: 70.0, end: 100.0).animate(controller);
