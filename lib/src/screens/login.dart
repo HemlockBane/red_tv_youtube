@@ -6,7 +6,36 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation colorAnimation;
+  Animation sizeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    controller =
+        AnimationController(vsync: this, duration: Duration(seconds: 2));
+    colorAnimation = ColorTween(begin: Colors.grey[500], end: Colors.red[800])
+        .animate(controller);
+    sizeAnimation = Tween<double>(begin: 70.0, end: 100.0).animate(controller);
+
+    // Rebuilding the screen when animation goes ahead
+    controller.addListener(() {
+      setState(() {});
+    });
+
+    // Repeat the animation after finish
+    controller.repeat();
+
+    //For single time
+    //controller.forward()
+
+    //Reverses the animation instead of starting it again and repeats
+    //controller.repeat(reverse: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,15 +44,15 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            width: 100,
-            height: 100,
+            width: sizeAnimation.value,
+            height: sizeAnimation.value,
             child: Image.asset('assets/images/red_tv.jpg'),
           ),
           SizedBox(height: 15),
           Center(
             child: MaterialButton(
               padding: EdgeInsets.symmetric(vertical: 7, horizontal: 30),
-              color: Colors.red[800],
+              color: colorAnimation.value,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(3)),
               onPressed: () {
