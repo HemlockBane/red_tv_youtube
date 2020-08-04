@@ -34,59 +34,44 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
+    _init();
+  }
+
+  /// Gets a Google 0Auth 2.0 token for the user's Youtube account and signs the
+  /// user checks if the user is subscribed to the RedTV channel
+  void _init() {
     setState(() {
       isLoading = true;
     });
 
-    print('user at begin: ${_googleSignIn.currentUser}');
-
-    _googleSignIn.isSignedIn().then((isSignedIn) async {
-      print('is signed in: $isSignedIn');
-
-      if (_googleSignIn.currentUser == null) {
-        _gAccount = await _googleSignIn.signIn();
-        print('current user: $_gAccount');
+    if (_googleSignIn.currentUser == null) {
+      _googleSignIn.signIn().then((gAccount) async {
+        _gAccount = gAccount;
+        // print('current user: $_gAccount');
         var auth = await _gAccount.authentication;
         token = auth.accessToken;
-        print('access token - $token');
-      }
-    });
-
-    _googleSignIn.onCurrentUserChanged
-        .listen((GoogleSignInAccount account) async {
-      print('on current user changed');
-      setState(() {
-        _gAccount = account;
-      });
-
-      if (_gAccount != null) {
-        var auth = await _gAccount.authentication;
-        print('current user: $_gAccount');
-        token = auth.accessToken;
-        print('access token - $token');
-
-        // _isSubscribed =
-        //     await _apiService.checkIfUserIsSubscribed(authToken: token);
-
-        _isSubscribed = false;
+        // print('access token - $token');
+        _isSubscribed =
+            await _apiService.checkIfUserIsSubscribed(authToken: token);
 
         setState(() {
           isLoading = false;
         });
-      }
-    });
+      });
+    } else {
+      _googleSignIn.currentUser.authentication.then((gAccount) async {
+        // print('current user: $gAccount');
+        var auth = await _gAccount.authentication;
+        token = auth.accessToken;
+        // print('access token - $token');
+        _isSubscribed =
+            await _apiService.checkIfUserIsSubscribed(authToken: token);
 
-    if (_gAccount != null) {
-      _googleSignIn.signInSilently(suppressErrors: false).catchError((e) {
-        print(e);
+        setState(() {
+          isLoading = false;
+        });
       });
     }
-
-    setState(() {
-      isLoading = false;
-    });
-
-    print('user at end: ${_googleSignIn.currentUser}');
   }
 
   @override
@@ -205,7 +190,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     setState(() {
                       isLoading = true;
                     });
-                    _isSubscribed = await _apiService.subscribe(authToken: token);
+                    _isSubscribed =
+                        await _apiService.subscribe(authToken: token);
                     setState(() {
                       isLoading = false;
                     });
