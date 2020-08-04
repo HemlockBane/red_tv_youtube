@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
+import 'package:red_tv_youtube/src/services/api_service.dart';
 
 final imageUrl = 'https://i.ytimg.com/vi/iNJt2WLH1EY/sddefault.jpg';
 
@@ -17,28 +19,86 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool _shouldShowMore = false;
+  bool _isSubscribed = false;
+  bool isLoading = false;
+  String token = '';
+
+  APIService _apiService = APIService.instance;
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+    'https://www.googleapis.com/auth/youtube'
+  ]);
+  GoogleSignInAccount _gAccount;
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  /// Gets a Google 0Auth 2.0 token for the user's Youtube account and signs the
+  /// user checks if the user is subscribed to the RedTV channel
+  void _init() {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (_googleSignIn.currentUser == null) {
+      _googleSignIn.signIn().then((gAccount) async {
+        _gAccount = gAccount;
+        // print('current user: $_gAccount');
+        var auth = await _gAccount.authentication;
+        token = auth.accessToken;
+        // print('access token - $token');
+        _isSubscribed =
+            await _apiService.checkIfUserIsSubscribed(authToken: token);
+
+        setState(() {
+          isLoading = false;
+        });
+      });
+    } else {
+      _googleSignIn.currentUser.authentication.then((gAccount) async {
+        // print('current user: $gAccount');
+        var auth = await _gAccount.authentication;
+        token = auth.accessToken;
+        // print('access token - $token');
+        _isSubscribed =
+            await _apiService.checkIfUserIsSubscribed(authToken: token);
+
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff3F3F3F),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 55,
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 55,
+                    ),
+                    _buildWelcomeBanner(),
+                    _buildInfoAndButtons(),
+                    _buildSeriesCarousel(),
+                    _buildPopularNowCarousel(),
+                    _buildExclusivesCarousel()
+                  ],
+                ),
               ),
-              _buildWelcomeBanner(),
-              _buildInfoAndButtons(),
-              _buildSeriesCarousel(),
-              _buildPopularNowCarousel(),
-              _buildExclusivesCarousel()
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -87,9 +147,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 fontSize: 12,
               ),
             ),
-            Container(
-              
-            ),
+            Container(),
             SizedBox(
               height: 5,
             ),
@@ -121,13 +179,24 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(3)),
                 child: Text(
-                  'Subscribe',
+                  _isSubscribed ? 'Subscribed' : 'Subscribe',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  if (!_isSubscribed) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    _isSubscribed =
+                        await _apiService.subscribe(authToken: token);
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
+                },
               ),
             ),
           ],
