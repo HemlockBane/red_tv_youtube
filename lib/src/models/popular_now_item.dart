@@ -1,6 +1,6 @@
 import 'package:red_tv_youtube/src/models/thumbnail.dart';
 
-class SearchItem {
+class PopularNowItem {
   String videoId;
   String title;
   String description;
@@ -8,7 +8,7 @@ class SearchItem {
   Thumbnail defaultThumbnail;
   Thumbnail mediumThumbnail;
 
-  SearchItem({
+  PopularNowItem({
     this.videoId,
     this.title,
     this.description,
@@ -17,10 +17,10 @@ class SearchItem {
     this.mediumThumbnail,
   });
 
-  factory SearchItem.fromJson(Map<String, dynamic> json) {
+  factory PopularNowItem.fromJson(Map<String, dynamic> json) {
     final thumbnails = json['snippet']['thumbnails'] as Map;
 
-    return SearchItem(
+    return PopularNowItem(
       videoId: json['id']['videoId'],
       title: json['snippet']['title'],
       description: json['snippet']['description'],

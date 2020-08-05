@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:red_tv_youtube/src/models/channel_model.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
 import 'package:red_tv_youtube/src/models/playlist_item.dart';
-import 'package:red_tv_youtube/src/models/search_item.dart';
+import 'package:red_tv_youtube/src/models/popular_now_item.dart';
 import 'package:red_tv_youtube/src/models/video_model.dart';
 import 'package:red_tv_youtube/src/utilities/keys.dart';
 
@@ -212,7 +212,7 @@ class APIService {
     }
   }
 
-  Future<PlaylistItemResponse> getPlaylistItems(
+  Future<PlaylistItemsResponse> getPlaylistItems(
       {@required String playlistId, @required String nextPageToken}) async {
     String _itemsNextPageToken = '';
 
@@ -243,7 +243,7 @@ class APIService {
           plistItems.add(playlistItem);
         }
 
-        return PlaylistItemResponse(
+        return PlaylistItemsResponse(
             nextPageToken: _itemsNextPageToken, items: plistItems);
       } else {
         throw jsonDecode(response.body)['error']['message'];
@@ -253,7 +253,7 @@ class APIService {
     }
   }
 
-  Future<SearchItemResponse> getPopularNowVideos(
+  Future<PopularNowItemsResponse> getPopularNowVideos(
       {@required String nextPageToken}) async {
     String _itemsNextPageToken = '';
     Map<String, String> parameters = {
@@ -280,14 +280,14 @@ class APIService {
         final items = data['items'] as List;
         print('api: popular video ${items[0]}');
 
-        List<SearchItem> searchItems = [];
+        List<PopularNowItem> searchItems = [];
         for (var item in items) {
-          final searchItem = SearchItem.fromJson(item);
+          final searchItem = PopularNowItem.fromJson(item);
           searchItems.add(searchItem);
         }
-        print('api: search items - $searchItems');
+        // print('api: search items - $searchItems');
 
-        return SearchItemResponse(
+        return PopularNowItemsResponse(
             totalResults: totalResults,
             nextPageToken: _itemsNextPageToken,
             items: searchItems);
@@ -300,17 +300,17 @@ class APIService {
   }
 }
 
-class SearchItemResponse {
+class PopularNowItemsResponse {
   String nextPageToken;
   int totalResults;
-  List<SearchItem> items;
+  List<PopularNowItem> items;
 
-  SearchItemResponse({this.nextPageToken, this.totalResults, this.items});
+  PopularNowItemsResponse({this.nextPageToken, this.totalResults, this.items});
 }
 
-class PlaylistItemResponse {
+class PlaylistItemsResponse {
   String nextPageToken;
   List<PlaylistItem> items;
 
-  PlaylistItemResponse({this.nextPageToken, this.items});
+  PlaylistItemsResponse({this.nextPageToken, this.items});
 }

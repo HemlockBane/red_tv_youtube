@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
-import 'package:red_tv_youtube/src/models/search_item.dart';
+import 'package:red_tv_youtube/src/models/popular_now_item.dart';
 import 'package:red_tv_youtube/src/notifiers/exclusives_playlist.dart';
 import 'package:red_tv_youtube/src/notifiers/popular_now.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
 import 'package:red_tv_youtube/src/screens/playlist_items.dart';
+import 'package:red_tv_youtube/src/screens/popular_now_items.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
 import 'package:red_tv_youtube/src/services/api_service.dart';
@@ -132,7 +133,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         }
                         print(popularNow.items.take(5).toList());
                         return _buildPopularNowCarousel(
-                            searchItems: popularNow.items);
+                            popularNowItems: popularNow.items);
                       },
                     ),
                     Consumer<ExclusivesPlaylistNotifier>(
@@ -422,8 +423,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
-  Widget _buildPopularNowCarousel({List<SearchItem> searchItems}) {
-    final items = searchItems.take(5).toList();
+  Widget _buildPopularNowCarousel({List<PopularNowItem> popularNowItems}) {
+    final items = popularNowItems.take(5).toList();
 
     return Container(
       height: 180,
@@ -448,11 +449,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       child: RaisedButton(
                         color: Colors.red[700],
                         onPressed: () {
-                          // Navigator.of(context).push(MaterialPageRoute(
-                          //   builder: (context) {
-                          //     return PlaylistItemsScreen();
-                          //   },
-                          // ));
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return PopularNowItemsScreen();
+                            },
+                          ));
                         },
                         child: Text(
                           'Show All',
