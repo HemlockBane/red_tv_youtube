@@ -265,7 +265,7 @@ class APIService {
       'part': 'snippet, contentDetails',
       'playlistId': playlistId,
       'pageToken': nextPageToken,
-      'maxResults': '15',
+      'maxResults': '20',
       'key': apiKey
     };
 

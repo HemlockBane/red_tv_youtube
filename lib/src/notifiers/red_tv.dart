@@ -43,5 +43,12 @@ class RedTVChannelNotifier extends ChangeNotifier {
     }
   }
 
-  getPlaylistItems() {}
+  getPlaylistItems({String playlistId}) async{
+    // Pass playlist id
+    // Use playlist id to load play list items
+    // Loop through list and find playlist with corresponding id
+    // Add playlistitems to playlist
+    // Notify listeners
+    
+  }
 }
