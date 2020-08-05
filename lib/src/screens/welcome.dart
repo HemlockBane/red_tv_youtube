@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:red_tv_youtube/src/models/playlist.dart';
+import 'package:red_tv_youtube/src/notifiers/exclusives_playlist.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
+import 'package:red_tv_youtube/src/screens/playlist_items.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
+import 'package:red_tv_youtube/src/screens/video_screen.dart';
 import 'package:red_tv_youtube/src/services/api_service.dart';
 
 final imageUrl = 'https://i.ytimg.com/vi/iNJt2WLH1EY/sddefault.jpg';
@@ -20,7 +25,10 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool _shouldShowMore = false;
   bool _isSubscribed = false;
-  bool isLoading = false;
+  bool isLoading = true;
+
+  bool isLoadingExclusives = true;
+
   String token = '';
 
   APIService _apiService = APIService.instance;
@@ -34,16 +42,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-    _init();
+    _initSubscriptions();
+    _initExclusives();
   }
 
   /// Gets a Google 0Auth 2.0 token for the user's Youtube account and signs the
   /// user checks if the user is subscribed to the RedTV channel
-  void _init() {
-    setState(() {
-      isLoading = true;
-    });
-
+  void _initSubscriptions() {
     if (_googleSignIn.currentUser == null) {
       _googleSignIn.signIn().then((gAccount) async {
         _gAccount = gAccount;
@@ -74,6 +79,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     }
   }
 
+  void _initExclusives() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final exclusives = ExclusivesPlaylistNotifier.of(context);
+      await exclusives.getPlaylist();
+
+      setState(() {
+        isLoadingExclusives = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,8 +109,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     _buildWelcomeBanner(),
                     _buildInfoAndButtons(),
                     _buildSeriesCarousel(),
-                    _buildPopularNowCarousel(),
-                    _buildExclusivesCarousel()
+                    // _buildPopularNowCarousel(),
+                    Consumer<ExclusivesPlaylistNotifier>(
+                      builder: (context, exclusives, _) {
+                        if (isLoadingExclusives) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return _buildExclusivesCarousel(exclusives.playlist);
+                      },
+                    )
                   ],
                 ),
               ),
@@ -384,20 +409,87 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         });
   }
 
-  Widget _buildExclusivesCarousel() {
-    return _buildMiniCarousel(
-        title: 'Exclusives',
-        onItemTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) {
-              return PlaylistDetailsScreen();
-            }),
-          );
-        });
+  Widget _buildExclusivesCarousel(Playlist exclusivesPlaylist) {
+    final playlistItems = exclusivesPlaylist.playlistItems.take(10).toList();
+
+    return Container(
+      height: 180,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Exclusives',
+            style: _textStyle(color: Color(0xFFCACACA)),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 9),
+            height: 117,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: playlistItems.length,
+              itemBuilder: (context, index) {
+                if (index == 9) {
+                  return Center(
+                    child: Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: RaisedButton(
+                        color: Colors.red[700],
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return PlaylistItemsScreen();
+                            },
+                          ));
+                        },
+                        child: Text(
+                          'Show All',
+                          style: _textStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                final playlistItem = playlistItems[index];
+                final imageUrl = playlistItem.maxresThumbnail.url;
+                return InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return VideoScreen(
+                          id: playlistItem.videoId,
+                        );
+                      },
+                    ));
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10),
+                    width: 98,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
   }
 
-  Widget _buildMiniCarousel({@required String title, VoidCallback onItemTap}) {
-    final imageUrls = List.generate(10, (_) => imageUrl);
+  Widget _buildMiniCarousel(
+      {@required String title,
+      List<String> imageUrls,
+      VoidCallback onItemTap,
+      VoidCallback onShowAllTap}) {
+    // final imageUrls = List.generate(5, (_) => imageUrl);
 
     return Container(
       height: 180,
@@ -415,6 +507,24 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               scrollDirection: Axis.horizontal,
               itemCount: imageUrls.length,
               itemBuilder: (context, index) {
+                if (index == 4) {
+                  return Center(
+                    child: Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: RaisedButton(
+                        color: Colors.red[700],
+                        onPressed: () {
+                          if (onItemTap != null) onShowAllTap();
+                        },
+                        child: Text(
+                          'Show All',
+                          style: _textStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
                 final imageUrl = imageUrls[index];
                 return InkWell(
                   onTap: () {
