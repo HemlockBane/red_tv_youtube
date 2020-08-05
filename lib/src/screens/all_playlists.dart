@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:red_tv_youtube/src/notifiers/exclusives_playlist.dart';
+import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
 
-class PlaylistItemsScreen extends StatefulWidget {
+class AllPlaylistsScreen extends StatefulWidget {
   @override
-  _PlaylistItemsScreenState createState() => _PlaylistItemsScreenState();
+  _AllPlaylistsScreenState createState() => _AllPlaylistsScreenState();
 }
 
-class _PlaylistItemsScreenState extends State<PlaylistItemsScreen> {
+class _AllPlaylistsScreenState extends State<AllPlaylistsScreen> {
   bool isLoading = false;
   ScrollController _scrollController;
 
@@ -16,9 +16,8 @@ class _PlaylistItemsScreenState extends State<PlaylistItemsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final exclusives = ExclusivesPlaylistNotifier.of(context);
-      final playlist = exclusives.playlist;
-      final playlistItems = exclusives.playlist.items;
+      final redTV = RedTVChannelNotifier.of(context);
+      final playlists = redTV.playlists;
 
       _scrollController = ScrollController();
       _scrollController.addListener(() {
@@ -28,9 +27,9 @@ class _PlaylistItemsScreenState extends State<PlaylistItemsScreen> {
             _scrollController.offset >=
                 _scrollController.position.maxScrollExtent &&
             !_scrollController.position.outOfRange &&
-            playlistItems.length <= playlist.itemCount) {
-          print('playlist_items: scroll listener should load');
-          fetchMorePlaylistItems().then((_) {});
+            playlists.length <= redTV.totalplaylistCount) {
+          print('all_playlists: scroll listener should load');
+          // fetchMorePopularNowItems().then((_) {});
         }
       });
     });
@@ -41,7 +40,7 @@ class _PlaylistItemsScreenState extends State<PlaylistItemsScreen> {
     return Scaffold(
       backgroundColor: Color(0xFF3F3F3F),
       appBar: AppBar(
-        title: Text('Exclusives'),
+        title: Text('All Playlists'),
         backgroundColor: Color(0xFF3F3F3F),
       ),
       body: SizedBox.expand(
@@ -59,32 +58,26 @@ class _PlaylistItemsScreenState extends State<PlaylistItemsScreen> {
                     height: 15,
                   ),
                   Expanded(
-                    child: Consumer<ExclusivesPlaylistNotifier>(
-                      builder: (context, exclusives, _) {
-                        final playlistItems = exclusives.playlist.items;
+                    child: Consumer<RedTVChannelNotifier>(
+                      builder: (context, redTV, _) {
+                        final playlists = redTV.playlists;
                         return Container(
                           // color: Colors.amber,
                           child: ListView.builder(
                             controller: _scrollController,
                             shrinkWrap: true,
-                            itemCount: playlistItems.length,
+                            itemCount: playlists.length,
                             itemBuilder: (context, index) {
-                              final playlistItem = playlistItems[index];
+                              final playlist = playlists[index];
 
                               return Container(
                                 margin: EdgeInsets.only(bottom: 10),
                                 child: ListTile(
                                   onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                        return VideoScreen(
-                                          id: playlistItem.videoId,
-                                        );
-                                      }),
-                                    );
+                                   
                                   },
                                   title: Text(
-                                    playlistItem.title,
+                                    playlist.title,
                                     style: TextStyle(color: Colors.white),
                                     softWrap: true,
                                   ),
@@ -95,7 +88,7 @@ class _PlaylistItemsScreenState extends State<PlaylistItemsScreen> {
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
                                           image: NetworkImage(
-                                            playlistItem.maxresThumbnail.url,
+                                            playlist.defaultThumbnail.url,
                                           ),
                                         ),
                                         borderRadius: BorderRadius.all(
@@ -117,15 +110,5 @@ class _PlaylistItemsScreenState extends State<PlaylistItemsScreen> {
         ),
       ),
     );
-  }
-
-  Future fetchMorePlaylistItems() async {
-    setState(() {
-      isLoading = true;
-    });
-    await ExclusivesPlaylistNotifier.of(context).getPlaylistItems();
-    setState(() {
-      isLoading = false;
-    });
   }
 }

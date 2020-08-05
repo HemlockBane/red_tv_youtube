@@ -7,8 +7,9 @@ import 'package:red_tv_youtube/src/models/popular_now_item.dart';
 import 'package:red_tv_youtube/src/notifiers/exclusives_playlist.dart';
 import 'package:red_tv_youtube/src/notifiers/popular_now.dart';
 import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
+import 'package:red_tv_youtube/src/screens/all_playlists.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
-import 'package:red_tv_youtube/src/screens/playlist_items.dart';
+import 'package:red_tv_youtube/src/screens/exclusive_items.dart';
 import 'package:red_tv_youtube/src/screens/popular_now_items.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
@@ -325,7 +326,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             margin: EdgeInsets.only(right: 10),
                             child: RaisedButton(
                               color: Colors.red[700],
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) {
+                                    return AllPlaylistsScreen();
+                                  },
+                                ));
+                              },
                               child: Text(
                                 'Show All',
                                 style: _textStyle(
@@ -343,7 +350,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               ? playlist.standardThumbnail.url
                               : playlist.defaultThumbnail.url;
 
-                      print(imageUrl);
+                      // print(imageUrl);
 
                       return InkWell(
                         onTap: () {
@@ -510,7 +517,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) {
-                              return PlaylistItemsScreen();
+                              return ExclusivesItemsScreen();
                             },
                           ));
                         },
