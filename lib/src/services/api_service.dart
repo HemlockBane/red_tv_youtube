@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:red_tv_youtube/src/models/channel_model.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
 import 'package:red_tv_youtube/src/models/playlist_item.dart';
+import 'package:red_tv_youtube/src/models/popular_now_item.dart';
 import 'package:red_tv_youtube/src/models/video_model.dart';
 import 'package:red_tv_youtube/src/utilities/keys.dart';
 
@@ -21,9 +22,10 @@ class APIService {
   final String _playlistItemsPath = '/playlistItems';
   final String _playlistsPath = '/playlists';
   final String _subscriptionsPath = '/subscriptions';
+  final String _searchPath = '/search';
   static final redTVId = "UCmaJwjJJkzMttK8L79g_8zA";
   String authToken = '';
-  String _nextPageToken = '';
+  String _nextPageToken = ''; //TODO: @ChidiChuks is using this variable
 
   bool subscriptionStatus = false;
 
@@ -210,8 +212,8 @@ class APIService {
     }
   }
 
-  Future<PlaylistItemResponse> getPlaylistItems(
-      {String playlistId, String nextPageToken}) async {
+  Future<PlaylistItemsResponse> getPlaylistItems(
+      {@required String playlistId, @required String nextPageToken}) async {
     String _itemsNextPageToken = '';
 
     Map<String, String> parameters = {
@@ -241,8 +243,54 @@ class APIService {
           plistItems.add(playlistItem);
         }
 
-        return PlaylistItemResponse(
+        return PlaylistItemsResponse(
             nextPageToken: _itemsNextPageToken, items: plistItems);
+      } else {
+        throw jsonDecode(response.body)['error']['message'];
+      }
+    } catch (e, s) {
+      print(s);
+    }
+  }
+
+  Future<PopularNowItemsResponse> getPopularNowVideos(
+      {@required String nextPageToken}) async {
+    String _itemsNextPageToken = '';
+    Map<String, String> parameters = {
+      'part': 'snippet',
+      'channelId': redTVId,
+      'pageToken': nextPageToken,
+      'maxResults': '50',
+      'order': 'viewCount',
+      'key': apiKey
+    };
+
+    Uri uri = Uri.https(_baseUrl, '$_basePath$_searchPath', parameters);
+
+    try {
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        _itemsNextPageToken = data['nextPageToken'] ?? '';
+        final totalResults = data['pageInfo']['totalResults'];
+        print('api: next page token - $_itemsNextPageToken');
+
+        // print('api: results per page - ${data['pageInfo']['resultsPerPage']}');
+        // print('api: total results - ${data['pageInfo']['totalResults']}');
+        final items = data['items'] as List;
+        print('api: popular video ${items[0]}');
+
+        List<PopularNowItem> searchItems = [];
+        for (var item in items) {
+          final searchItem = PopularNowItem.fromJson(item);
+          searchItems.add(searchItem);
+        }
+        // print('api: search items - $searchItems');
+
+        return PopularNowItemsResponse(
+            totalResults: totalResults,
+            nextPageToken: _itemsNextPageToken,
+            items: searchItems);
       } else {
         throw jsonDecode(response.body)['error']['message'];
       }
@@ -252,9 +300,17 @@ class APIService {
   }
 }
 
-class PlaylistItemResponse {
+class PopularNowItemsResponse {
+  String nextPageToken;
+  int totalResults;
+  List<PopularNowItem> items;
+
+  PopularNowItemsResponse({this.nextPageToken, this.totalResults, this.items});
+}
+
+class PlaylistItemsResponse {
   String nextPageToken;
   List<PlaylistItem> items;
 
-  PlaylistItemResponse({this.nextPageToken, this.items});
+  PlaylistItemsResponse({this.nextPageToken, this.items});
 }

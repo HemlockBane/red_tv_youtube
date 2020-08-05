@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_tv_youtube/src/notifiers/exclusives_playlist.dart';
+import 'package:red_tv_youtube/src/notifiers/popular_now.dart';
 import 'package:red_tv_youtube/src/screens/login.dart';
 import 'package:red_tv_youtube/src/screens/welcome.dart';
 
@@ -10,6 +11,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ExclusivesPlaylistNotifier()),
+        ChangeNotifierProvider(create: (_) => PopularNowNotifier()),
+
       ],
       child: MaterialApp(
         title: 'Red TV Youtube',

@@ -16,7 +16,8 @@ class ExclusivesPlaylistNotifier extends ChangeNotifier {
     try {
       final api = APIService.instance;
       playlist = await api.getPlaylist(playlistId: playlistId);
-      final itemResponse = await api.getPlaylistItems(playlistId: playlistId);
+      final itemResponse = await api.getPlaylistItems(
+          playlistId: playlistId, nextPageToken: _nextItemsToken);
       _nextItemsToken = itemResponse.nextPageToken;
       playlist.items = itemResponse.items;
       notifyListeners();

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
+import 'package:red_tv_youtube/src/models/popular_now_item.dart';
 import 'package:red_tv_youtube/src/notifiers/exclusives_playlist.dart';
+import 'package:red_tv_youtube/src/notifiers/popular_now.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
 import 'package:red_tv_youtube/src/screens/playlist_items.dart';
+import 'package:red_tv_youtube/src/screens/popular_now_items.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
 import 'package:red_tv_youtube/src/services/api_service.dart';
@@ -28,6 +31,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   bool isLoading = true;
 
   bool isLoadingExclusives = true;
+  bool isLoadingPopularNow = true;
 
   String token = '';
 
@@ -44,6 +48,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     super.initState();
     _initSubscriptions();
     _initExclusives();
+    _initPopularNow();
   }
 
   /// Gets a Google 0Auth 2.0 token for the user's Youtube account and signs the
@@ -90,6 +95,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     });
   }
 
+  void _initPopularNow() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final popularNow = PopularNowNotifier.of(context);
+      await popularNow.getPopularNowVideos();
+      setState(() {
+        isLoadingPopularNow = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +124,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     _buildWelcomeBanner(),
                     _buildInfoAndButtons(),
                     _buildSeriesCarousel(),
-                    // _buildPopularNowCarousel(),
+                    Consumer<PopularNowNotifier>(
+                      builder: (context, popularNow, _) {
+                        if (isLoadingPopularNow) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        print(popularNow.items.take(5).toList());
+                        return _buildPopularNowCarousel(
+                            popularNowItems: popularNow.items);
+                      },
+                    ),
                     Consumer<ExclusivesPlaylistNotifier>(
                       builder: (context, exclusives, _) {
                         if (isLoadingExclusives) {
@@ -397,20 +423,83 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
-  Widget _buildPopularNowCarousel() {
-    return _buildMiniCarousel(
-        title: 'Popular Now',
-        onItemTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) {
-              return PlaylistDetailsScreen();
-            }),
-          );
-        });
+  Widget _buildPopularNowCarousel({List<PopularNowItem> popularNowItems}) {
+    final items = popularNowItems.take(5).toList();
+
+    return Container(
+      height: 180,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Popular Now',
+            style: _textStyle(color: Color(0xFFCACACA)),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 9),
+            height: 117,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                if (index == 4) {
+                  return Center(
+                    child: Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: RaisedButton(
+                        color: Colors.red[700],
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return PopularNowItemsScreen();
+                            },
+                          ));
+                        },
+                        child: Text(
+                          'Show All',
+                          style: _textStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                final item = items[index];
+                final imageUrl = item.mediumThumbnail.url;
+                return InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return VideoScreen(
+                          id: item.videoId,
+                        );
+                      },
+                    ));
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10),
+                    width: 98,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildExclusivesCarousel(Playlist exclusivesPlaylist) {
-    final playlistItems = exclusivesPlaylist.playlistItems.take(10).toList();
+    final playlistItems = exclusivesPlaylist.playlistItems.take(5).toList();
 
     return Container(
       height: 180,
@@ -428,7 +517,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               scrollDirection: Axis.horizontal,
               itemCount: playlistItems.length,
               itemBuilder: (context, index) {
-                if (index == 9) {
+                if (index == 4) {
                   return Center(
                     child: Container(
                       margin: EdgeInsets.only(right: 10),
