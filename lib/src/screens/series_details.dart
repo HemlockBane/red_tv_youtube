@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:red_tv_youtube/src/models/playlist.dart';
 import 'package:red_tv_youtube/src/screens/movie_screen.dart';
 // import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class SeriesDetailsScreen extends StatefulWidget {
+  final Playlist series;
+
+  SeriesDetailsScreen({this.series});
+
   @override
   _SeriesDetailsScreenState createState() => _SeriesDetailsScreenState();
 }
@@ -56,109 +61,121 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
               height: height / 2,
             ),
             Text(
-              "The Men's Club".toUpperCase(),
+              widget.series.title.toUpperCase(),
               style: _textStyle(
                   color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold),
             ),
-            Text("Season 3".toUpperCase(),
+            // Text("Season 3".toUpperCase(),
+            //     style: _textStyle(
+            //         color: Colors.white,
+            //         fontSize: 26,
+            //         fontWeight: FontWeight.w300)),
+            // SizedBox(
+            //   height: 30,
+            // ),
+            if (widget.series.description.isNotEmpty)
+              Text(
+                "Synopsis",
                 style: _textStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w300)),
-            SizedBox(
-              height: 30,
-            ),
-            Text("Synopsis",
-                style: _textStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
+                    color: Colors.white, fontWeight: FontWeight.bold),
+              ),
             SizedBox(
               height: 11,
             ),
-            Text(
-                "The men's club takes us on a journey of 4 friends surrounded by women,"
-                "business and the hassles of the city.\n\nWhen a group of middle-aged friends "
-                "gets together to talk about various aspects of their lives, the gathering gradually turns into a drunken party. "
-                "Kicked out of their cozy domestic environment by an irate wife, the men.",
-                style: _textStyle()),
+
+            if (widget.series.description.isNotEmpty)
+              Text(
+                widget.series.description,
+                style: _textStyle(),
+              ),
             SizedBox(
               height: 31,
             ),
+            // Text(
+            //   "Cast",
+            //   style:
+            //       _textStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            // ),
+            // SizedBox(
+            //   height: 6,
+            // ),
+            // Text(
+            //   "Baaj Adebule, Ayoola Ayolola, Efa Iwara",
+            //   style: _textStyle(),
+            // ),
+            // SizedBox(
+            //   height: 23,
+            // ),
+            // Container(
+            //   margin: EdgeInsets.only(right: 30),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: <Widget>[
+            //       Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: <Widget>[
+            //           Text(
+            //             'Ratings',
+            //             style: _textStyle(
+            //                 color: Colors.white, fontWeight: FontWeight.bold),
+            //           ),
+            //           SizedBox(
+            //             height: 6,
+            //           ),
+            //           Text(
+            //             '9.3/10',
+            //             style: _textStyle(),
+            //           ),
+            //         ],
+            //       ),
+            //       Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: <Widget>[
+            //           Text(
+            //             'Duration',
+            //             style: _textStyle(
+            //                 color: Colors.white, fontWeight: FontWeight.bold),
+            //           ),
+            //           SizedBox(
+            //             height: 6,
+            //           ),
+            //           Text(
+            //             '25 mins',
+            //             style: _textStyle(),
+            //           ),
+            //         ],
+            //       ),
+            //       Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: <Widget>[
+            //           Text(
+            //             'Genre',
+            //             style: _textStyle(
+            //                 color: Colors.white, fontWeight: FontWeight.bold),
+            //           ),
+            //           SizedBox(
+            //             height: 6,
+            //           ),
+            //           Text(
+            //             'Drama',
+            //             style: _textStyle(),
+            //           ),
+            //         ],
+            //       )
+            //     ],
+            //   ),
+            // ),
             Text(
-              "Cast",
+              "Episodes",
               style:
                   _textStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             SizedBox(
-              height: 6,
+              height: 11,
             ),
-            Text(
-              "Baaj Adebule, Ayoola Ayolola, Efa Iwara",
-              style: _textStyle(),
-            ),
-            SizedBox(
-              height: 23,
-            ),
-            Container(
-              margin: EdgeInsets.only(right: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Ratings',
-                        style: _textStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        '9.3/10',
-                        style: _textStyle(),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Duration',
-                        style: _textStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        '25 mins',
-                        style: _textStyle(),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Genre',
-                        style: _textStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        'Drama',
-                        style: _textStyle(),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
+            Column(children: <Widget>[],),
             SizedBox(
               height: 100,
             )

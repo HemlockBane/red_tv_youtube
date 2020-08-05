@@ -62,7 +62,6 @@ class _AllPlaylistsScreenState extends State<AllPlaylistsScreen> {
                       builder: (context, redTV, _) {
                         final playlists = redTV.playlists;
                         return Container(
-                          // color: Colors.amber,
                           child: ListView.builder(
                             controller: _scrollController,
                             shrinkWrap: true,
@@ -73,9 +72,7 @@ class _AllPlaylistsScreenState extends State<AllPlaylistsScreen> {
                               return Container(
                                 margin: EdgeInsets.only(bottom: 10),
                                 child: ListTile(
-                                  onTap: () {
-                                   
-                                  },
+                                  onTap: () {},
                                   title: Text(
                                     playlist.title,
                                     style: TextStyle(color: Colors.white),

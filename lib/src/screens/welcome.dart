@@ -258,34 +258,40 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 },
               ),
             ),
-            Container(
-              width: double.infinity / 2,
-              child: MaterialButton(
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                color: Colors.red[700],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(3)),
-                child: Text(
-                  _isSubscribed ? 'Subscribed' : 'Subscribe',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            if (!_isSubscribed)
+              Container(
+                width: double.infinity / 2,
+                child: MaterialButton(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                  color: Colors.red[700],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3)),
+                  child: Text(
+                    'Subscribe',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () async {
+                    if (!_isSubscribed) {
+                      setState(() {
+                        isLoadingSubscription = true;
+                      });
+                      _isSubscribed =
+                          await _apiService.subscribe(authToken: token);
+                      setState(() {
+                        isLoadingSubscription = false;
+                      });
+                    }
+                  },
                 ),
-                onPressed: () async {
-                  if (!_isSubscribed) {
-                    setState(() {
-                      isLoadingSubscription = true;
-                    });
-                    _isSubscribed =
-                        await _apiService.subscribe(authToken: token);
-                    setState(() {
-                      isLoadingSubscription = false;
-                    });
-                  }
-                },
               ),
-            ),
+            if (_isSubscribed)
+              Text(
+                'Subscribed',
+                style: _textStyle(color: Colors.white),
+              )
           ],
         ),
       ),
@@ -356,7 +362,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) {
-                              return SeriesDetailsScreen();
+                              return SeriesDetailsScreen(
+                                series: playlist,
+                              );
                             }),
                           );
                         },
