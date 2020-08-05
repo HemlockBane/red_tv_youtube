@@ -33,8 +33,10 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
               children: <Widget>[
                 Container(
                   height: height,
-                  child: Image.asset(
-                    imageSeries,
+                  child: Image.network(
+                    widget.series.standardThumbnail.isValid
+                        ? widget.series.standardThumbnail.url
+                        : widget.series.defaultThumbnail.url,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -175,7 +177,9 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
             SizedBox(
               height: 11,
             ),
-            Column(children: <Widget>[],),
+            Column(
+              children: <Widget>[],
+            ),
             SizedBox(
               height: 100,
             )

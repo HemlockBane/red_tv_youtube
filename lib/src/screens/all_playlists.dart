@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
+import 'package:red_tv_youtube/src/screens/series_details.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
 
 class AllPlaylistsScreen extends StatefulWidget {
@@ -72,7 +73,16 @@ class _AllPlaylistsScreenState extends State<AllPlaylistsScreen> {
                               return Container(
                                 margin: EdgeInsets.only(bottom: 10),
                                 child: ListTile(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return SeriesDetailsScreen(
+                                              series: playlist);
+                                        },
+                                      ),
+                                    );
+                                  },
                                   title: Text(
                                     playlist.title,
                                     style: TextStyle(color: Colors.white),
