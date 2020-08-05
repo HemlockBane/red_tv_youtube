@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:red_tv_youtube/src/models/channel_model.dart';
+import 'package:red_tv_youtube/src/models/channel.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
 import 'package:red_tv_youtube/src/models/playlist_item.dart';
 import 'package:red_tv_youtube/src/models/popular_now_item.dart';
-import 'package:red_tv_youtube/src/models/video_model.dart';
+import 'package:red_tv_youtube/src/models/video.dart';
 import 'package:red_tv_youtube/src/utilities/keys.dart';
 
 class APIService {
@@ -33,7 +33,7 @@ class APIService {
     HttpHeaders.contentTypeHeader: 'application/json'
   };
 
-  Future<Channel> fetchChannel({String channelId}) async {
+  Future<Channel> getChannel({String channelId}) async {
     Map<String, String> parameters = {
       'part': 'snippet, contentDetails, statistics',
       'id': channelId,
@@ -52,15 +52,90 @@ class APIService {
     var response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body)['items'][0];
-      Channel channel = Channel.fromMap(data);
+      Channel channel = Channel.fromJson(data);
 
-      // Fetch first batch of videos from uploads playlist
-      channel.videos = await fetchVideosFromPlaylist(
-        playlistId: channel.uploadPlaylistId,
-      );
+      // // Fetch first batch of videos from uploads playlist
+      // channel.videos = await fetchVideosFromPlaylist(
+      //   playlistId: channel.uploadPlaylistId,
+      // );
       return channel;
     } else {
       throw json.decode(response.body)['error']['message'];
+    }
+  }
+
+  Future<PlaylistsResponse> getPlaylists({String channelId}) async {
+    Map<String, String> parameters = {
+      'part': 'snippet, contentDetails',
+      'channelId': channelId,
+      'key': API_KEY,
+      'maxResults': '25'
+    };
+    Uri uri = Uri.https(
+      _baseUrl,
+      '$_basePath$_playlistsPath',
+      parameters,
+    );
+
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+    try {
+      var response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        final nextPageToken = data['nextPageToken'];
+        final totalResults = data['pageInfo']['totalResults'];
+        final items = data['items'] as List;
+
+        List<Playlist> playlists = [];
+
+        for (var item in items) {
+          final playlist = Playlist.fromJson(item);
+          playlists.add(playlist);
+        }
+
+        final playlistsResponse = PlaylistsResponse(
+          nextPageToken: nextPageToken,
+          totalResults: totalResults,
+          items: playlists,
+        );
+
+        return playlistsResponse;
+      } else {
+        throw json.decode(response.body)['error']['message'];
+      }
+    } catch (e) {}
+  }
+
+  Future<Playlist> getPlaylist({String playlistId}) async {
+    Playlist playlist;
+
+    Map<String, String> parameters = {
+      'part': 'snippet, contentDetails',
+      'id': playlistId,
+      'key': apiKey
+    };
+
+    Uri uri = Uri.https(_baseUrl, '$_basePath$_playlistsPath', parameters);
+    print('api: $uri');
+
+    try {
+      final response = await http.get(uri, headers: headers);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        // print('api: playlist - $data');
+        final items = data['items'] as List;
+
+        final item = items[0];
+        playlist = Playlist.fromJson(item);
+        return playlist;
+      } else {
+        throw jsonDecode(response.body)['error']['message'];
+      }
+    } catch (e, s) {
+      print(e);
     }
   }
 
@@ -122,10 +197,10 @@ class APIService {
 
       final response = await http.get(uri, headers: headers);
 
-      print(jsonDecode(response.body) as Map);
+      // print(jsonDecode(response.body) as Map);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('api: subscription status - $data');
+        // print('api: subscription status - $data');
         final items = data['items'] as List;
         return subscriptionStatus = items.isNotEmpty;
       }
@@ -139,7 +214,7 @@ class APIService {
   }
 
   Future<bool> subscribe({String authToken}) async {
-    print(authToken);
+    // print(authToken);
 
     var subscriptionBody = {
       "snippet": {
@@ -167,7 +242,7 @@ class APIService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('api: subscribe user - $data');
+        // print('api: subscribe user - $data');
         subscriptionStatus = true;
       }
 
@@ -180,36 +255,6 @@ class APIService {
     }
 
     return subscriptionStatus;
-  }
-
-  Future<Playlist> getPlaylist({String playlistId}) async {
-    Playlist playlist;
-
-    Map<String, String> parameters = {
-      'part': 'snippet, contentDetails',
-      'id': playlistId,
-      'key': apiKey
-    };
-
-    Uri uri = Uri.https(_baseUrl, '$_basePath$_playlistsPath', parameters);
-    print('api: $uri');
-
-    try {
-      final response = await http.get(uri, headers: headers);
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        print('api: playlist - $data');
-        final items = data['items'] as List;
-
-        final item = items[0];
-        playlist = Playlist.fromJson(item);
-        return playlist;
-      } else {
-        throw jsonDecode(response.body)['error']['message'];
-      }
-    } catch (e, s) {
-      print(e);
-    }
   }
 
   Future<PlaylistItemsResponse> getPlaylistItems(
@@ -233,8 +278,8 @@ class APIService {
         _itemsNextPageToken = data['nextPageToken'] ?? '';
         // print('api: next page token - $_nextPageToken');
 
-        print(
-            'api: total results per page - ${data['pageInfo']['resultsPerPage']}');
+        // print(
+        //     'api: total results per page - ${data['pageInfo']['resultsPerPage']}');
         final items = data['items'] as List;
 
         List<PlaylistItem> plistItems = [];
@@ -273,12 +318,12 @@ class APIService {
         final data = jsonDecode(response.body);
         _itemsNextPageToken = data['nextPageToken'] ?? '';
         final totalResults = data['pageInfo']['totalResults'];
-        print('api: next page token - $_itemsNextPageToken');
+        // print('api: next page token - $_itemsNextPageToken');
 
         // print('api: results per page - ${data['pageInfo']['resultsPerPage']}');
         // print('api: total results - ${data['pageInfo']['totalResults']}');
         final items = data['items'] as List;
-        print('api: popular video ${items[0]}');
+        // print('api: popular video ${items[0]}');
 
         List<PopularNowItem> searchItems = [];
         for (var item in items) {
@@ -298,6 +343,14 @@ class APIService {
       print(s);
     }
   }
+}
+
+class PlaylistsResponse {
+  String nextPageToken;
+  int totalResults;
+  List<Playlist> items;
+
+  PlaylistsResponse({this.nextPageToken, this.totalResults, this.items});
 }
 
 class PopularNowItemsResponse {

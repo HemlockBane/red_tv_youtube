@@ -1,17 +1,20 @@
-import 'package:red_tv_youtube/src/models/video_model.dart';
+import 'package:red_tv_youtube/src/models/playlist.dart';
+import 'package:red_tv_youtube/src/models/video.dart';
 
 class Channel {
-  final String id;
-  final String title;
-  final String profilePictureUrl;
-  final String subscriberCount;
-  final String videoCount;
-  final String uploadPlaylistId;
+  String id;
+  String title;
+  String description;
+  String profilePictureUrl;
+  String subscriberCount;
+  String videoCount;
+  String uploadPlaylistId;
   List<Video> videos;
 
   Channel({
     this.id,
     this.title,
+    this.description,
     this.profilePictureUrl,
     this.subscriberCount,
     this.videoCount,
@@ -19,10 +22,11 @@ class Channel {
     this.videos,
   });
 
-  factory Channel.fromMap(Map<String, dynamic> map) {
+  factory Channel.fromJson(Map<String, dynamic> map) {
     return Channel(
       id: map['id'],
       title: map['snippet']['title'],
+      description: map['snippet']['description'],
       profilePictureUrl: map['snippet']['thumbnails']['default']['url'],
       subscriberCount: map['statistics']['subscriberCount'],
       videoCount: map['statistics']['videoCount'],

@@ -61,7 +61,7 @@ class _PlaylistItemsScreenState extends State<PlaylistItemsScreen> {
                   Expanded(
                     child: Consumer<ExclusivesPlaylistNotifier>(
                       builder: (context, exclusives, _) {
-                        final playlistItems = exclusives.playlist.playlistItems;
+                        final playlistItems = exclusives.playlist.items;
                         return Container(
                           // color: Colors.amber,
                           child: ListView.builder(

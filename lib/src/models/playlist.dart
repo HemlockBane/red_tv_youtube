@@ -8,8 +8,10 @@ class Playlist {
   int itemCount;
   Thumbnail standardThumbnail;
   Thumbnail defaultThumbnail;
+  Thumbnail maxresThumbnail;
+
   List<PlaylistItem> items;
-  // String itemsNextPageToken;
+  String itemsNextPageToken;
 
   List<PlaylistItem> get playlistItems => items
       .where((playlistItem) => playlistItem.title != 'Private video')
@@ -21,6 +23,7 @@ class Playlist {
     this.description,
     this.defaultThumbnail,
     this.standardThumbnail,
+    this.maxresThumbnail,
     this.itemCount,
     this.items,
   });
@@ -40,6 +43,9 @@ class Playlist {
           thumbnails.isNotEmpty && thumbnails.containsKey('standard')
               ? Thumbnail.fromJson(thumbnails['standard'])
               : Thumbnail.empty(),
+      maxresThumbnail: thumbnails.isNotEmpty && thumbnails.containsKey('maxres')
+          ? Thumbnail.fromJson(thumbnails['maxres'])
+          : Thumbnail.empty(),
       itemCount: json['contentDetails']['itemCount'],
     );
   }
@@ -48,6 +54,7 @@ class Playlist {
   String toString() {
     return 'id - $id, title - $title, '
         'description -$description, itemCount - $itemCount, '
-        'thumbnailUrl - ${defaultThumbnail.url}';
+        'defaultThumbnail - ${defaultThumbnail.url},'
+        'standardThumbnail - ${standardThumbnail.url}, maxresThumbnail - ${defaultThumbnail.url}';
   }
 }
