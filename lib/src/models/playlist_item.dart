@@ -10,7 +10,7 @@ class PlaylistItem {
   final Thumbnail defaultThumbnail;
   final Thumbnail standardThumbnail;
   final Thumbnail maxresThumbnail;
-  List<Video> videos;
+  // List<Video> videos;
 
   PlaylistItem(
       {this.id,

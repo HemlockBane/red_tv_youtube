@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
+import 'package:red_tv_youtube/src/models/playlist_item.dart';
+import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
 import 'package:red_tv_youtube/src/screens/movie_screen.dart';
+import 'package:red_tv_youtube/src/screens/video_screen.dart';
 // import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class SeriesDetailsScreen extends StatefulWidget {
@@ -18,7 +22,24 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
   final imageSeries = 'assets/images/the_menn.jpg';
 
   double height = 0;
+  bool isLoadingPlaylistItems = true;
+
+  /// Index of playlist Red TV's list of playlists
+  int playlistIndex = 0;
+
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final redTV = RedTVChannelNotifier.of(context);
+      playlistIndex = redTV.playlists.indexOf(widget.series);
+      await redTV.getPlaylistItems(playlist: widget.series);
+      setState(() {
+        isLoadingPlaylistItems = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -41,7 +62,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
                   ),
                 ),
                 _buildGradient(context),
-                buildColumn(context),
+                _buildColumn(context),
               ],
             ),
             _buildBottomButton()
@@ -51,7 +72,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
     );
   }
 
-  Widget buildColumn(BuildContext context) {
+  Widget _buildColumn(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
       height: height,
@@ -177,8 +198,55 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
             SizedBox(
               height: 11,
             ),
-            Column(
-              children: <Widget>[],
+            Selector<RedTVChannelNotifier, List<PlaylistItem>>(
+              selector: (context, redTV) =>
+                  redTV.playlists[playlistIndex].filteredItems,
+              builder: (context, items, __) {
+                // print('series_details - $items');
+                if (isLoadingPlaylistItems) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                return Container(
+                  child: Column(
+                    children: items.map((item) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return VideoScreen(id: item.videoId);
+                                },
+                              ),
+                            );
+                          },
+                          title: Text(
+                            item.title,
+                            style: TextStyle(color: Colors.white),
+                            softWrap: true,
+                          ),
+                          leading: Container(
+                            height: 159,
+                            width: 70,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    item.defaultThumbnail.url,
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5),
+                                )),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
             ),
             SizedBox(
               height: 100,

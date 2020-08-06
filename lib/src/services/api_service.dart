@@ -68,7 +68,7 @@ class APIService {
     Map<String, String> parameters = {
       'part': 'snippet, contentDetails',
       'channelId': channelId,
-      'key': API_KEY,
+      'key': apiKey,
       'maxResults': '25'
     };
     Uri uri = Uri.https(
