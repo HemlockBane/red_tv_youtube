@@ -498,7 +498,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Widget _buildExclusivesCarousel(Playlist exclusivesPlaylist) {
-    final playlistItems = exclusivesPlaylist.items.take(5).toList();
+    final playlistItems = exclusivesPlaylist.filteredItems.take(5).toList();
 
     return Container(
       height: 180,
