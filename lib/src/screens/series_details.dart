@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:red_tv_youtube/src/models/playlist.dart';
+import 'package:red_tv_youtube/src/models/playlist_item.dart';
+import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
 import 'package:red_tv_youtube/src/screens/movie_screen.dart';
+import 'package:red_tv_youtube/src/screens/video_screen.dart';
+import 'package:red_tv_youtube/src/screens/watch_full_season.dart';
 // import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class SeriesDetailsScreen extends StatefulWidget {
+  final Playlist series;
+
+  SeriesDetailsScreen({this.series});
+
   @override
   _SeriesDetailsScreenState createState() => _SeriesDetailsScreenState();
 }
@@ -13,7 +23,24 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
   final imageSeries = 'assets/images/the_menn.jpg';
 
   double height = 0;
+  bool isLoadingPlaylistItems = true;
+
+  /// Index of playlist Red TV's list of playlists
+  int playlistIndex = 0;
+
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final redTV = RedTVChannelNotifier.of(context);
+      playlistIndex = redTV.playlists.indexOf(widget.series);
+      await redTV.getPlaylistItems(playlist: widget.series);
+      setState(() {
+        isLoadingPlaylistItems = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -28,13 +55,15 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
               children: <Widget>[
                 Container(
                   height: height,
-                  child: Image.asset(
-                    imageSeries,
+                  child: Image.network(
+                    widget.series.standardThumbnail.isValid
+                        ? widget.series.standardThumbnail.url
+                        : widget.series.defaultThumbnail.url,
                     fit: BoxFit.cover,
                   ),
                 ),
                 _buildGradient(context),
-                buildColumn(context),
+                _buildColumn(context),
               ],
             ),
             _buildBottomButton()
@@ -44,7 +73,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
     );
   }
 
-  Widget buildColumn(BuildContext context) {
+  Widget _buildColumn(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
       height: height,
@@ -56,108 +85,169 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
               height: height / 2,
             ),
             Text(
-              "The Men's Club".toUpperCase(),
+              widget.series.title.toUpperCase(),
               style: _textStyle(
                   color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold),
             ),
-            Text("Season 3".toUpperCase(),
+            // Text("Season 3".toUpperCase(),
+            //     style: _textStyle(
+            //         color: Colors.white,
+            //         fontSize: 26,
+            //         fontWeight: FontWeight.w300)),
+            // SizedBox(
+            //   height: 30,
+            // ),
+            if (widget.series.description.isNotEmpty)
+              Text(
+                "Synopsis",
                 style: _textStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w300)),
-            SizedBox(
-              height: 30,
-            ),
-            Text("Synopsis",
-                style: _textStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
+                    color: Colors.white, fontWeight: FontWeight.bold),
+              ),
             SizedBox(
               height: 11,
             ),
-            Text(
-                "The men's club takes us on a journey of 4 friends surrounded by women,"
-                "business and the hassles of the city.\n\nWhen a group of middle-aged friends "
-                "gets together to talk about various aspects of their lives, the gathering gradually turns into a drunken party. "
-                "Kicked out of their cozy domestic environment by an irate wife, the men.",
-                style: _textStyle()),
+
+            if (widget.series.description.isNotEmpty)
+              Text(
+                widget.series.description,
+                style: _textStyle(),
+              ),
             SizedBox(
               height: 31,
             ),
+            // Text(
+            //   "Cast",
+            //   style:
+            //       _textStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            // ),
+            // SizedBox(
+            //   height: 6,
+            // ),
+            // Text(
+            //   "Baaj Adebule, Ayoola Ayolola, Efa Iwara",
+            //   style: _textStyle(),
+            // ),
+            // SizedBox(
+            //   height: 23,
+            // ),
+            // Container(
+            //   margin: EdgeInsets.only(right: 30),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: <Widget>[
+            //       Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: <Widget>[
+            //           Text(
+            //             'Ratings',
+            //             style: _textStyle(
+            //                 color: Colors.white, fontWeight: FontWeight.bold),
+            //           ),
+            //           SizedBox(
+            //             height: 6,
+            //           ),
+            //           Text(
+            //             '9.3/10',
+            //             style: _textStyle(),
+            //           ),
+            //         ],
+            //       ),
+            //       Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: <Widget>[
+            //           Text(
+            //             'Duration',
+            //             style: _textStyle(
+            //                 color: Colors.white, fontWeight: FontWeight.bold),
+            //           ),
+            //           SizedBox(
+            //             height: 6,
+            //           ),
+            //           Text(
+            //             '25 mins',
+            //             style: _textStyle(),
+            //           ),
+            //         ],
+            //       ),
+            //       Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: <Widget>[
+            //           Text(
+            //             'Genre',
+            //             style: _textStyle(
+            //                 color: Colors.white, fontWeight: FontWeight.bold),
+            //           ),
+            //           SizedBox(
+            //             height: 6,
+            //           ),
+            //           Text(
+            //             'Drama',
+            //             style: _textStyle(),
+            //           ),
+            //         ],
+            //       )
+            //     ],
+            //   ),
+            // ),
             Text(
-              "Cast",
+              "${widget.series.itemCount} Episodes",
               style:
                   _textStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             SizedBox(
-              height: 6,
+              height: 11,
             ),
-            Text(
-              "Baaj Adebule, Ayoola Ayolola, Efa Iwara",
-              style: _textStyle(),
-            ),
-            SizedBox(
-              height: 23,
-            ),
-            Container(
-              margin: EdgeInsets.only(right: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Ratings',
-                        style: _textStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        '9.3/10',
-                        style: _textStyle(),
-                      ),
-                    ],
+            Selector<RedTVChannelNotifier, List<PlaylistItem>>(
+              selector: (context, redTV) =>
+                  redTV.playlists[playlistIndex].filteredItems,
+              builder: (context, items, __) {
+                // print('series_details - $items');
+                if (isLoadingPlaylistItems) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                return Container(
+                  child: Column(
+                    children: items.map((item) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return VideoScreen(id: item.videoId);
+                                },
+                              ),
+                            );
+                          },
+                          title: Text(
+                            item.title,
+                            style: TextStyle(color: Colors.white),
+                            softWrap: true,
+                          ),
+                          leading: Container(
+                            height: 159,
+                            width: 70,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    item.defaultThumbnail.url,
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5),
+                                )),
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Duration',
-                        style: _textStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        '25 mins',
-                        style: _textStyle(),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Genre',
-                        style: _textStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        'Drama',
-                        style: _textStyle(),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                );
+              },
             ),
             SizedBox(
               height: 100,
@@ -177,9 +267,13 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
           child: InkWell(
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) {
-                  return MovieScreen();
-                }),
+                MaterialPageRoute(
+                  builder: (context) {
+                    return WatchFullSeasonScreen(
+                      playlist: widget.series,
+                    );
+                  },
+                ),
               );
             },
             child: Container(

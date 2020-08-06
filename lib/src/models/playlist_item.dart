@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:red_tv_youtube/src/models/thumbnail.dart';
+import 'package:red_tv_youtube/src/models/video.dart';
 
 class PlaylistItem {
   final String id;
@@ -9,6 +10,7 @@ class PlaylistItem {
   final Thumbnail defaultThumbnail;
   final Thumbnail standardThumbnail;
   final Thumbnail maxresThumbnail;
+  // List<Video> videos;
 
   PlaylistItem(
       {this.id,

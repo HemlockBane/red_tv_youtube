@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:red_tv_youtube/src/models/channel_model.dart';
-import 'package:red_tv_youtube/src/models/video_model.dart';
+import 'package:red_tv_youtube/src/models/channel.dart';
+import 'package:red_tv_youtube/src/models/video.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
 import 'package:red_tv_youtube/src/services/api_service.dart';
 
@@ -21,7 +21,7 @@ class _MovieScreenState extends State<MovieScreen> {
 
   _initChannel() async {
     Channel channel = await APIService.instance
-        .fetchChannel(channelId: 'UCmaJwjJJkzMttK8L79g_8zA'); // The Channel ID
+        .getChannel(channelId: 'UCmaJwjJJkzMttK8L79g_8zA'); // The Channel ID
     setState(() {
       _channel = channel;
     });
@@ -65,6 +65,7 @@ class _MovieScreenState extends State<MovieScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
+
                   '${_channel.subscriberCount} subscribers',
                   style: TextStyle(
                     color: Colors.grey[600],

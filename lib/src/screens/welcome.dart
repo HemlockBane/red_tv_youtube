@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:red_tv_youtube/src/models/channel.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
 import 'package:red_tv_youtube/src/models/popular_now_item.dart';
 import 'package:red_tv_youtube/src/notifiers/exclusives_playlist.dart';
 import 'package:red_tv_youtube/src/notifiers/popular_now.dart';
+import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
+import 'package:red_tv_youtube/src/screens/all_playlists.dart';
 import 'package:red_tv_youtube/src/screens/playlist_details.dart';
-import 'package:red_tv_youtube/src/screens/playlist_items.dart';
+import 'package:red_tv_youtube/src/screens/exclusive_items.dart';
 import 'package:red_tv_youtube/src/screens/popular_now_items.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
@@ -28,7 +31,8 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool _shouldShowMore = false;
   bool _isSubscribed = false;
-  bool isLoading = true;
+  bool isLoadingSubscription = true;
+  bool isLoadingRedTV = true;
 
   bool isLoadingExclusives = true;
   bool isLoadingPopularNow = true;
@@ -46,9 +50,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
+    _initChannel();
     _initSubscriptions();
     _initExclusives();
     _initPopularNow();
+  }
+
+  void _initChannel() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final redTV = RedTVChannelNotifier.of(context);
+      await redTV.getChannelDetails();
+      print(redTV.playlists);
+      setState(() {
+        isLoadingRedTV = false;
+      });
+    });
   }
 
   /// Gets a Google 0Auth 2.0 token for the user's Youtube account and signs the
@@ -65,8 +81,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             await _apiService.checkIfUserIsSubscribed(authToken: token);
 
         setState(() {
-          isLoading = false;
+          isLoadingSubscription = false;
         });
+      }).catchError((e) {
+        print('welcome.dart: $e');
       });
     } else {
       _googleSignIn.currentUser.authentication.then((gAccount) async {
@@ -78,7 +96,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             await _apiService.checkIfUserIsSubscribed(authToken: token);
 
         setState(() {
-          isLoading = false;
+          isLoadingSubscription = false;
         });
       });
     }
@@ -109,7 +127,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff3F3F3F),
-      body: isLoading
+      body: isLoadingSubscription
           ? Center(
               child: CircularProgressIndicator(),
             )
@@ -122,8 +140,32 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       height: 55,
                     ),
                     _buildWelcomeBanner(),
-                    _buildInfoAndButtons(),
-                    _buildSeriesCarousel(),
+                    Consumer<RedTVChannelNotifier>(
+                      builder: (context, redTV, _) {
+                        if (isLoadingRedTV) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        return _buildInfoAndButtons(
+                          redTVChannel: redTV.channel,
+                        );
+                      },
+                    ),
+                    Consumer<RedTVChannelNotifier>(
+                      builder: (context, redTV, _) {
+                        if (isLoadingRedTV) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        return _buildSeriesCarousel(
+                          playlists: redTV.playlists.take(5).toList(),
+                        );
+                      },
+                    ),
                     Consumer<PopularNowNotifier>(
                       builder: (context, popularNow, _) {
                         if (isLoadingPopularNow) {
@@ -131,7 +173,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        print(popularNow.items.take(5).toList());
+
                         return _buildPopularNowCarousel(
                             popularNowItems: popularNow.items);
                       },
@@ -176,20 +218,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
-  Padding _buildInfoAndButtons() {
+  Padding _buildInfoAndButtons({Channel redTVChannel}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 25.0),
       child: Container(
         child: Column(
           children: <Widget>[
             Text(
-              "REDTV is a fast paced  lifestyle channel that puts Africa on the global stage. "
-              "\n\nProudly associated with the United Bank for Africa, REDTV is here "
-              "to entertain and inform with content that features the very "
-              "best in entertainment, fashion, news, design, music, sport, "
-              "movies and travel.\n\nREDTV collaborates with the "
-              "most talented visionaries, creative minds daring to believe in a New Africa, putting "
-              "together content that reflects it. Feel the Heat on REDTV.",
+              redTVChannel.description,
               maxLines: _shouldShowMore ? null : 7,
               overflow: TextOverflow.fade,
               style: TextStyle(
@@ -222,41 +258,47 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 },
               ),
             ),
-            Container(
-              width: double.infinity / 2,
-              child: MaterialButton(
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                color: Colors.red[700],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(3)),
-                child: Text(
-                  _isSubscribed ? 'Subscribed' : 'Subscribe',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            if (!_isSubscribed)
+              Container(
+                width: double.infinity / 2,
+                child: MaterialButton(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                  color: Colors.red[700],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3)),
+                  child: Text(
+                    'Subscribe',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () async {
+                    if (!_isSubscribed) {
+                      setState(() {
+                        isLoadingSubscription = true;
+                      });
+                      _isSubscribed =
+                          await _apiService.subscribe(authToken: token);
+                      setState(() {
+                        isLoadingSubscription = false;
+                      });
+                    }
+                  },
                 ),
-                onPressed: () async {
-                  if (!_isSubscribed) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    _isSubscribed =
-                        await _apiService.subscribe(authToken: token);
-                    setState(() {
-                      isLoading = false;
-                    });
-                  }
-                },
               ),
-            ),
+            if (_isSubscribed)
+              Text(
+                'Subscribed',
+                style: _textStyle(color: Colors.white),
+              )
           ],
         ),
       ),
     );
   }
 
-  Column _buildSeriesCarousel() {
+  Column _buildSeriesCarousel({List<Playlist> playlists}) {
     return Column(
       children: <Widget>[
         Padding(
@@ -275,14 +317,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  'New Episodes',
-                  style: TextStyle(
-                    color: Color(0xFF8A8A8A),
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 SizedBox(
                   height: 4,
                 ),
@@ -290,13 +324,47 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   height: 200,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: 5,
+                    itemCount: playlists.length,
                     itemBuilder: (context, index) {
+                      if (index == 4) {
+                        return Center(
+                          child: Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: RaisedButton(
+                              color: Colors.red[700],
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) {
+                                    return AllPlaylistsScreen();
+                                  },
+                                ));
+                              },
+                              child: Text(
+                                'Show All',
+                                style: _textStyle(
+                                    color: Colors.white, fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      final playlist = playlists[index];
+                      final imageUrl = playlist.maxresThumbnail.isValid
+                          ? playlist.maxresThumbnail.url
+                          : playlist.standardThumbnail.isValid
+                              ? playlist.standardThumbnail.url
+                              : playlist.defaultThumbnail.url;
+
+                      // print(imageUrl);
+
                       return InkWell(
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) {
-                              return SeriesDetailsScreen();
+                              return SeriesDetailsScreen(
+                                series: playlist,
+                              );
                             }),
                           );
                         },
@@ -306,7 +374,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           margin: EdgeInsets.only(right: 8),
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage(imageSeries),
+                              image: NetworkImage(
+                                imageUrl,
+                              ),
                               fit: BoxFit.fitHeight,
                             ),
                             shape: BoxShape.rectangle,
@@ -319,24 +389,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  'THE MEN\'S CLUB'.toUpperCase(),
+                                  playlist.title.toUpperCase(),
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 12.0,
-                                        color: Colors.black,
-                                        offset: Offset(1.0, 5.0),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                  'SEASON 3'.toUpperCase(),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
                                     fontSize: 18,
                                     color: Colors.white,
                                     shadows: [
@@ -353,62 +408,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           ),
                         ),
                       );
-                      // return Row(
-                      //   children: <Widget>[
-                      //     // Container(
-                      //     //   height: 374,
-                      //     //   width: 239,
-                      //     //   decoration: BoxDecoration(
-                      //     //     image: DecorationImage(
-                      //     //       image: AssetImage('assets/images/asst_madam.jpg'),
-                      //     //       fit: BoxFit.fitHeight,
-                      //     //     ),
-                      //     //     shape: BoxShape.rectangle,
-                      //     //     borderRadius: BorderRadius.circular(10),
-                      //     //   ),
-                      //     //   child: Padding(
-                      //     //     padding: const EdgeInsets.symmetric(
-                      //     //         horizontal: 15.0, vertical: 15.0),
-                      //     //     child: Column(
-                      //     //       mainAxisAlignment: MainAxisAlignment.end,
-                      //     //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //     //       children: <Widget>[
-                      //     //         Text(
-                      //     //           'ASSISTANT MADAM'.toUpperCase(),
-                      //     //           style: TextStyle(
-                      //     //             fontWeight: FontWeight.bold,
-                      //     //             fontSize: 18,
-                      //     //             color: Colors.white,
-                      //     //             shadows: [
-                      //     //               Shadow(
-                      //     //                 blurRadius: 12.0,
-                      //     //                 color: Colors.black,
-                      //     //                 offset: Offset(1.0, 5.0),
-                      //     //               ),
-                      //     //             ],
-                      //     //           ),
-                      //     //         ),
-                      //     //         Text(
-                      //     //           'SEASON 1'.toUpperCase(),
-                      //     //           style: TextStyle(
-                      //     //             fontWeight: FontWeight.w400,
-                      //     //             fontSize: 18,
-                      //     //             color: Colors.white,
-                      //     //             shadows: [
-                      //     //               Shadow(
-                      //     //                 blurRadius: 12.0,
-                      //     //                 color: Colors.black,
-                      //     //                 offset: Offset(1.0, 5.0),
-                      //     //               ),
-                      //     //             ],
-                      //     //           ),
-                      //     //         ),
-                      //     //       ],
-                      //     //     ),
-                      //     //   ),
-                      //     // ),
-                      //   ],
-                      // );
                     },
                   ),
                 ),
@@ -499,7 +498,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Widget _buildExclusivesCarousel(Playlist exclusivesPlaylist) {
-    final playlistItems = exclusivesPlaylist.playlistItems.take(5).toList();
+    final playlistItems = exclusivesPlaylist.filteredItems.take(5).toList();
 
     return Container(
       height: 180,
@@ -526,7 +525,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) {
-                              return PlaylistItemsScreen();
+                              return ExclusivesItemsScreen();
                             },
                           ));
                         },

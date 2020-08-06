@@ -5,8 +5,8 @@ class Thumbnail {
 
   Thumbnail({this.url = '', this.width = 0, this.height = 0});
 
-  bool get isValid => this.url != '' || this.url != ' ';
-
+  bool get isValid => this.url.isNotEmpty && this.url != ' ';
+  
   Thumbnail.empty() : this();
 
   factory Thumbnail.fromJson(Map<String, dynamic> json) {
