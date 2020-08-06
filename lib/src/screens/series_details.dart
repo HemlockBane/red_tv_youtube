@@ -5,6 +5,7 @@ import 'package:red_tv_youtube/src/models/playlist_item.dart';
 import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
 import 'package:red_tv_youtube/src/screens/movie_screen.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
+import 'package:red_tv_youtube/src/screens/watch_full_season.dart';
 // import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class SeriesDetailsScreen extends StatefulWidget {
@@ -191,7 +192,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
             //   ),
             // ),
             Text(
-              "Episodes",
+              "${widget.series.itemCount} Episodes",
               style:
                   _textStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
@@ -266,9 +267,13 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
           child: InkWell(
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) {
-                  return MovieScreen();
-                }),
+                MaterialPageRoute(
+                  builder: (context) {
+                    return WatchFullSeasonScreen(
+                      playlist: widget.series,
+                    );
+                  },
+                ),
               );
             },
             child: Container(
