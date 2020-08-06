@@ -14,6 +14,8 @@ class WatchFullSeasonScreen extends StatefulWidget {
 class _WatchFullSeasonScreenState extends State<WatchFullSeasonScreen> {
   YoutubePlayerController _controller;
 
+  int selectedVideo = 1;
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +69,7 @@ class _WatchFullSeasonScreenState extends State<WatchFullSeasonScreen> {
             Container(
               margin: EdgeInsets.only(left: 20),
               child: Text(
-                '${widget.playlist.filteredItems.length} Episodes',
+                '$selectedVideo/${widget.playlist.filteredItems.length} Episodes',
                 style: _textStyle(),
               ),
             ),
@@ -87,6 +89,9 @@ class _WatchFullSeasonScreenState extends State<WatchFullSeasonScreen> {
                     child: ListTile(
                       onTap: () {
                         setState(() {
+                          setState(() {
+                            selectedVideo = index + 1;
+                          });
                           _controller.load(item.videoId);
                         });
                       },
