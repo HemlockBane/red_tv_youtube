@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:red_tv_youtube/src/models/channel.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
+import 'package:red_tv_youtube/src/models/playlist_item.dart';
 import 'package:red_tv_youtube/src/models/popular_now_item.dart';
 import 'package:red_tv_youtube/src/notifiers/exclusives_playlist.dart';
 import 'package:red_tv_youtube/src/notifiers/popular_now.dart';
@@ -14,6 +15,7 @@ import 'package:red_tv_youtube/src/screens/popular_now_items.dart';
 import 'package:red_tv_youtube/src/screens/series_details.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
 import 'package:red_tv_youtube/src/services/api_service.dart';
+import 'package:shimmer/shimmer.dart';
 
 final imageUrl = 'https://i.ytimg.com/vi/iNJt2WLH1EY/sddefault.jpg';
 
@@ -127,75 +129,52 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff3F3F3F),
-      body: isLoadingSubscription
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 55,
-                    ),
-                    _buildWelcomeBanner(),
-                    Consumer<RedTVChannelNotifier>(
-                      builder: (context, redTV, _) {
-                        if (isLoadingRedTV) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        return _buildInfoAndButtons(
-                          redTVChannel: redTV.channel,
-                        );
-                      },
-                    ),
-                    Consumer<RedTVChannelNotifier>(
-                      builder: (context, redTV, _) {
-                        if (isLoadingRedTV) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        return _buildSeriesCarousel(
-                          playlists: redTV.playlists.take(5).toList(),
-                        );
-                      },
-                    ),
-                    Consumer<PopularNowNotifier>(
-                      builder: (context, popularNow, _) {
-                        if (isLoadingPopularNow) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        return _buildPopularNowCarousel(
-                            popularNowItems: popularNow.items);
-                      },
-                    ),
-                    Consumer<ExclusivesPlaylistNotifier>(
-                      builder: (context, exclusives, _) {
-                        if (isLoadingExclusives) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        return _buildExclusivesCarousel(exclusives.playlist);
-                      },
-                    )
-                  ],
-                ),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 55,
               ),
-            ),
+              _buildWelcomeBanner(),
+              Consumer<RedTVChannelNotifier>(
+                builder: (context, redTV, _) {
+                  if (isLoadingRedTV) {
+                    return _showShimmerPlaceholder();
+                  }
+
+                  return _buildInfoAndButtons(
+                    redTVChannel: redTV.channel,
+                  );
+                },
+              ),
+              Consumer<RedTVChannelNotifier>(
+                builder: (context, redTV, _) {
+                  return _buildSeriesCarousel(
+                    playlists: redTV.playlists.take(5).toList(),
+                  );
+                },
+              ),
+              Consumer<PopularNowNotifier>(
+                builder: (context, popularNow, _) {
+                  return _buildPopularNowCarousel(
+                      popularNowItems: popularNow.items);
+                },
+              ),
+              Consumer<ExclusivesPlaylistNotifier>(
+                builder: (context, exclusives, _) {
+                  return _buildExclusivesCarousel(exclusives.playlist);
+                },
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Row _buildWelcomeBanner() {
+  Widget _buildWelcomeBanner() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -215,6 +194,24 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           child: Image.asset('assets/images/red_tv.jpg'),
         ),
       ],
+    );
+  }
+
+  Widget _showShimmerPlaceholder({double height = 200}) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Shimmer.fromColors(
+        baseColor: Color(0xFFCACACA),
+        highlightColor: Color(0xFFCACACA).withOpacity(0.33),
+        child: Container(
+          height: height,
+          decoration: BoxDecoration(
+            // childless container needs to be visible for shimmer to show
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+      ),
     );
   }
 
@@ -320,97 +317,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 SizedBox(
                   height: 4,
                 ),
-                Container(
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: playlists.length,
-                    itemBuilder: (context, index) {
-                      if (index == 4) {
-                        return Center(
-                          child: Container(
-                            margin: EdgeInsets.only(right: 10),
-                            child: RaisedButton(
-                              color: Colors.red[700],
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) {
-                                    return AllPlaylistsScreen();
-                                  },
-                                ));
-                              },
-                              child: Text(
-                                'Show All',
-                                style: _textStyle(
-                                    color: Colors.white, fontSize: 14),
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-
-                      final playlist = playlists[index];
-                      final imageUrl = playlist.maxresThumbnail.isValid
-                          ? playlist.maxresThumbnail.url
-                          : playlist.standardThumbnail.isValid
-                              ? playlist.standardThumbnail.url
-                              : playlist.defaultThumbnail.url;
-
-                      // print(imageUrl);
-
-                      return InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
-                              return SeriesDetailsScreen(
-                                series: playlist,
-                              );
-                            }),
-                          );
-                        },
-                        child: Container(
-                          height: 274,
-                          width: 179,
-                          margin: EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                imageUrl,
-                              ),
-                              fit: BoxFit.fitHeight,
-                            ),
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  playlist.title.toUpperCase(),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 12.0,
-                                        color: Colors.black,
-                                        offset: Offset(1.0, 5.0),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                if (isLoadingRedTV) _showShimmerPlaceholder(),
+                if (!isLoadingRedTV) _showSeriesCarousel(playlists),
                 SizedBox(
                   height: 15.0,
                 ),
@@ -422,11 +330,104 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
+  Widget _showSeriesCarousel(List<Playlist> playlists) {
+    return Container(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: playlists.length,
+        itemBuilder: (context, index) {
+          if (index == 4) {
+            return Center(
+              child: Container(
+                margin: EdgeInsets.only(right: 10),
+                child: RaisedButton(
+                  color: Colors.red[700],
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return AllPlaylistsScreen();
+                      },
+                    ));
+                  },
+                  child: Text(
+                    'Show All',
+                    style: _textStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ),
+              ),
+            );
+          }
+
+          final playlist = playlists[index];
+          final imageUrl = playlist.maxresThumbnail.isValid
+              ? playlist.maxresThumbnail.url
+              : playlist.standardThumbnail.isValid
+                  ? playlist.standardThumbnail.url
+                  : playlist.defaultThumbnail.url;
+
+          // print(imageUrl);
+
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) {
+                  return SeriesDetailsScreen(
+                    series: playlist,
+                  );
+                }),
+              );
+            },
+            child: Container(
+              height: 274,
+              width: 179,
+              margin: EdgeInsets.only(right: 8),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                    imageUrl,
+                  ),
+                  fit: BoxFit.fitHeight,
+                ),
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      playlist.title.toUpperCase(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 12.0,
+                            color: Colors.black,
+                            offset: Offset(1.0, 5.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildPopularNowCarousel({List<PopularNowItem> popularNowItems}) {
     final items = popularNowItems.take(5).toList();
 
     return Container(
-      height: 180,
+      margin: EdgeInsets.only(bottom: 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -434,65 +435,70 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             'Popular Now',
             style: _textStyle(color: Color(0xFFCACACA)),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 9),
-            height: 117,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                if (index == 4) {
-                  return Center(
-                    child: Container(
-                      margin: EdgeInsets.only(right: 10),
-                      child: RaisedButton(
-                        color: Colors.red[700],
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) {
-                              return PopularNowItemsScreen();
-                            },
-                          ));
-                        },
-                        child: Text(
-                          'Show All',
-                          style: _textStyle(color: Colors.white, fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  );
-                }
+          if (isLoadingPopularNow) _showShimmerPlaceholder(),
+          if (!isLoadingPopularNow) _showPopularNowCarousel(items)
+        ],
+      ),
+    );
+  }
 
-                final item = items[index];
-                final imageUrl = item.mediumThumbnail.url;
-                return InkWell(
-                  onTap: () {
+  Widget _showPopularNowCarousel(List<PopularNowItem> items) {
+    return Container(
+      margin: EdgeInsets.only(top: 9),
+      height: 117,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          if (index == 4) {
+            return Center(
+              child: Container(
+                margin: EdgeInsets.only(right: 10),
+                child: RaisedButton(
+                  color: Colors.red[700],
+                  onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) {
-                        return VideoScreen(
-                          id: item.videoId,
-                        );
+                        return PopularNowItemsScreen();
                       },
                     ));
                   },
-                  child: Container(
-                    margin: EdgeInsets.only(right: 10),
-                    width: 98,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(imageUrl),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
+                  child: Text(
+                    'Show All',
+                    style: _textStyle(color: Colors.white, fontSize: 14),
                   ),
-                );
-              },
+                ),
+              ),
+            );
+          }
+
+          final item = items[index];
+          final imageUrl = item.mediumThumbnail.url;
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) {
+                  return VideoScreen(
+                    id: item.videoId,
+                  );
+                },
+              ));
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 10),
+              width: 98,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
             ),
-          )
-        ],
+          );
+        },
       ),
     );
   }
@@ -501,7 +507,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final playlistItems = exclusivesPlaylist.filteredItems.take(5).toList();
 
     return Container(
-      height: 180,
+      margin: EdgeInsets.only(bottom: 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -509,65 +515,70 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             'Exclusives',
             style: _textStyle(color: Color(0xFFCACACA)),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 9),
-            height: 117,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: playlistItems.length,
-              itemBuilder: (context, index) {
-                if (index == 4) {
-                  return Center(
-                    child: Container(
-                      margin: EdgeInsets.only(right: 10),
-                      child: RaisedButton(
-                        color: Colors.red[700],
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) {
-                              return ExclusivesItemsScreen();
-                            },
-                          ));
-                        },
-                        child: Text(
-                          'Show All',
-                          style: _textStyle(color: Colors.white, fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  );
-                }
+          if (isLoadingExclusives) _showShimmerPlaceholder(),
+          if (!isLoadingExclusives) _showExclusivesCarousel(playlistItems)
+        ],
+      ),
+    );
+  }
 
-                final playlistItem = playlistItems[index];
-                final imageUrl = playlistItem.maxresThumbnail.url;
-                return InkWell(
-                  onTap: () {
+  Widget _showExclusivesCarousel(List<PlaylistItem> playlistItems) {
+    return Container(
+      margin: EdgeInsets.only(top: 9),
+      height: 117,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: playlistItems.length,
+        itemBuilder: (context, index) {
+          if (index == 4) {
+            return Center(
+              child: Container(
+                margin: EdgeInsets.only(right: 10),
+                child: RaisedButton(
+                  color: Colors.red[700],
+                  onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) {
-                        return VideoScreen(
-                          id: playlistItem.videoId,
-                        );
+                        return ExclusivesItemsScreen();
                       },
                     ));
                   },
-                  child: Container(
-                    margin: EdgeInsets.only(right: 10),
-                    width: 98,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(imageUrl),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
+                  child: Text(
+                    'Show All',
+                    style: _textStyle(color: Colors.white, fontSize: 14),
                   ),
-                );
-              },
+                ),
+              ),
+            );
+          }
+
+          final playlistItem = playlistItems[index];
+          final imageUrl = playlistItem.maxresThumbnail.url;
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) {
+                  return VideoScreen(
+                    id: playlistItem.videoId,
+                  );
+                },
+              ));
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 10),
+              width: 98,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
             ),
-          )
-        ],
+          );
+        },
       ),
     );
   }
@@ -624,9 +635,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                           image: NetworkImage(imageUrl), fit: BoxFit.cover),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
                     ),
                   ),
                 );
