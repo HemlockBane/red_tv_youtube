@@ -14,9 +14,6 @@ class APIService {
 
   static final APIService instance = APIService._instantiate();
 
-  // final apiKey = 'AIzaSyAZ2LG8W9qM_JgCJF99VJaqvMPWHvVflw8';
-  final apiKey = 'AIzaSyC9AU2-GCw8b4_VbCEQ6Qy5mgzs03HEghs';
-
   final String _baseUrl = 'www.googleapis.com';
   final String _basePath = '/youtube/v3';
   final String _playlistItemsPath = '/playlistItems';
