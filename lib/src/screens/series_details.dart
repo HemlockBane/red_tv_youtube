@@ -6,6 +6,7 @@ import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
 import 'package:red_tv_youtube/src/screens/movie_screen.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
 import 'package:red_tv_youtube/src/screens/watch_full_season.dart';
+import 'package:shimmer/shimmer.dart';
 // import 'package:red_tv_youtube/src/screens/welcome.dart';
 
 class SeriesDetailsScreen extends StatefulWidget {
@@ -63,7 +64,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
                   ),
                 ),
                 _buildGradient(context),
-                _buildColumn(context),
+                _buildSeriesDetails(context),
               ],
             ),
             _buildBottomButton()
@@ -73,7 +74,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
     );
   }
 
-  Widget _buildColumn(BuildContext context) {
+  Widget _buildSeriesDetails(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
       height: height,
@@ -204,9 +205,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
                   redTV.playlists[playlistIndex].filteredItems,
               builder: (context, items, __) {
                 // print('series_details - $items');
-                if (isLoadingPlaylistItems) {
-                  return Center(child: CircularProgressIndicator());
-                }
+                if (isLoadingPlaylistItems) return _showShimmerPlaceholder();
 
                 return Container(
                   child: Column(
@@ -232,15 +231,16 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
                             height: 159,
                             width: 70,
                             decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                    item.defaultThumbnail.url,
-                                  ),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                  item.defaultThumbnail.url,
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                )),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                            ),
                           ),
                         ),
                       );
@@ -253,6 +253,44 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
               height: 100,
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  Shimmer _showShimmerPlaceholder() {
+    return Shimmer.fromColors(
+      baseColor: Color(0xFFCACACA),
+      highlightColor: Color(0xFFCACACA).withOpacity(0.33),
+      child: Column(
+        children: List<Widget>.generate(
+          6,
+          (_) {
+            return Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: ListTile(
+                onTap: () {},
+                title: Container(
+                  color: Colors.white,
+                  child: Text(
+                    ' ',
+                    style: TextStyle(color: Colors.white),
+                    softWrap: true,
+                  ),
+                ),
+                leading: Container(
+                  height: 159,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(5),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
