@@ -63,6 +63,7 @@ class _WatchFullSeasonScreenState extends State<WatchFullSeasonScreen> {
               margin: EdgeInsets.only(left: 20),
               child: Text(
                 widget.playlist.title,
+                
                 style: _textStyle(),
               ),
             ),
