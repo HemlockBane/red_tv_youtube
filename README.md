@@ -1,16 +1,28 @@
-# red_tv_youtube
+# Red TV Player
 
-A new Flutter project.
+Red TV Player is a video-streaming app that allows you watch all your favourites shows from RED TV.
+
+## Features
+
+
+### Screenshots
+Pending...
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
+- Ensure that you have flutter installed and setup correctly
+- You'll need an API key to access Youtube Data API. Follow steps 1 - 3 [here](https://developers.google.com/youtube/v3/getting-started)
+- Add your API key to code
+- You'll also need OAuth 2.0 authorization to be able to access the user's Youtube subscriptions. This app uses the [Google Sign In plugin](https://pub.dev/packages/google_sign_in) to generate an OAuth 2.0 access token. While setting up the plugin, you'll need to add your SHA1 key to the Firebase project you used to set up the app
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Dependencies
+- provider
+- youtube_player_flutter
+- google_sign_in
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Installing the app
+- Clone the repo
+- Fetch dependencies: Run `flutter packages get` in the terminal
+- Install app: Run `flutter run`  in the terminal
