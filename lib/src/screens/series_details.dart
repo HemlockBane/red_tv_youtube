@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:red_tv_youtube/src/models/playlist.dart';
 import 'package:red_tv_youtube/src/models/playlist_item.dart';
 import 'package:red_tv_youtube/src/notifiers/red_tv.dart';
-import 'package:red_tv_youtube/src/screens/movie_screen.dart';
 import 'package:red_tv_youtube/src/screens/video_screen.dart';
 import 'package:red_tv_youtube/src/screens/watch_full_season.dart';
 import 'package:shimmer/shimmer.dart';

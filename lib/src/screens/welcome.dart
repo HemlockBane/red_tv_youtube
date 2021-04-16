@@ -51,8 +51,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-    _initChannel();
     _initSubscriptions();
+    _initChannel();
     _initExclusives();
     _initPopularNow();
   }
