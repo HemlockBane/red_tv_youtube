@@ -1,6 +1,6 @@
 # Red TV Player
 
-Red TV Player is a video-streaming app that allows you watch all your favourites shows from RED TV.
+Red TV Player is a video-streaming app that allows you watch all your favourites shows from RED TV
 
 ## Features
 
