@@ -6,8 +6,28 @@ Red TV Player is a video-streaming app that allows you watch all your favourites
 
 
 ### Screenshots
-Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+Home:
+![alt text](https://github.com/HemlockBane/red_tv_youtube/raw/dev/screenshots/welcome.jpg "Home")
+
+All Playlists:
+![alt text](https://github.com/HemlockBane/red_tv_youtube/raw/dev/screenshots/all_playlists.jpg "All Playlists")
+
+Playlist Details:
+![alt text](https://github.com/HemlockBane/red_tv_youtube/raw/dev/screenshots/playlist_desc.jpg "Playlist Details")
+
+All Exclusives:
+![alt text](https://github.com/HemlockBane/red_tv_youtube/raw/dev/screenshots/all_exclusives.jpg "All Exclusives")
+
+Watch All Videos:
+![alt text](https://github.com/HemlockBane/red_tv_youtube/raw/dev/screenshots/watch_all.jpg "Watch All Videos")
+
+Watch Single Video:
+![alt text](https://github.com/HemlockBane/red_tv_youtube/raw/dev/screenshots/watch_one.jpg "Watch Single Video")
+
+
+
+
+
 
 ## Getting Started
 
